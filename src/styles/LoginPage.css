@@ -1,0 +1,40 @@
+.login-container {
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at center, #001a33 0%, #00050a 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.glass-form-card {
+  width: 400px;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+  text-align: center;
+  color: #ffffff;
+}
+
+.form-header h1 {
+  font-size: 1.5rem;
+  letter-spacing: 4px;
+  margin: 15px 0 5px 0;
+  color: #00ffff;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.form-header p {
+  font-size: 0.7rem;
+  opacity: 0.6;
+  margin-bottom: 30px;
+}
+
+.input-group {
+  text-align: left;
+  margin-bottom: 20px;
+}

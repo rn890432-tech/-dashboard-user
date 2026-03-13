@@ -1,0 +1,32 @@
+.glitch-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: #000;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.glitch-text {
+  color: #00ffff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2rem;
+  letter-spacing: 10px;
+  animation: glitch-text-anim 0.2s infinite;
+}
+
+.glitch-layer {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: url('https://www.transparenttextures.com/patterns/stardust.png');
+  opacity: 0.5;
+}
+
+@keyframes glitch-text-anim {
+  0% { transform: translate(0); text-shadow: -2px 0 red, 2px 0 blue; }
+  25% { transform: translate(-5px, 5px); text-shadow: 2px 0 red, -2px 0 blue; }
+  50% { transform: translate(5px, -5px); text-shadow: -2px 0 blue, 2px 0 red; }
+  75% { transform: translate(-2px, -2px); }
+  100% { transform: translate(0); }
+}

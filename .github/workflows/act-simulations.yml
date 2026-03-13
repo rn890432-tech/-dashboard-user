@@ -1,0 +1,143 @@
+name: Act Simulations
+
+on:
+  pull_request:
+    paths:
+      - '**/*.yml'
+      - '**/*.yaml'
+
+jobs:
+  simulate-dev:
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.act-dev.outputs.status }}
+      url: ${{ steps.set-url.outputs.url }}
+      logs: ${{ steps.act-dev.outputs.logs }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install act
+        run: |
+          curl -s https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash
+
+      - name: Run act with dev secrets
+        id: act-dev
+        run: |
+          if act pull_request --secret-file .secrets.dev --dryrun > act-dev.log; then
+            echo "status=success" >> $GITHUB_OUTPUT
+          else
+            echo "status=failure" >> $GITHUB_OUTPUT
+          fi
+          echo "logs=$(tail -n 20 act-dev.log | sed ':a;N;$!ba;s/\n/\\n/g')" >> $GITHUB_OUTPUT
+
+      - name: Set job URL
+        id: set-url
+        run: |
+          echo "url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $GITHUB_OUTPUT
+
+  simulate-staging:
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.act-staging.outputs.status }}
+      url: ${{ steps.set-url.outputs.url }}
+      logs: ${{ steps.act-staging.outputs.logs }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install act
+        run: |
+          curl -s https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash
+
+      - name: Run act with staging secrets
+        id: act-staging
+        run: |
+          if act pull_request --secret-file .secrets.staging --dryrun > act-staging.log; then
+            echo "status=success" >> $GITHUB_OUTPUT
+          else
+            echo "status=failure" >> $GITHUB_OUTPUT
+          fi
+          echo "logs=$(tail -n 20 act-staging.log | sed ':a;N;$!ba;s/\n/\\n/g')" >> $GITHUB_OUTPUT
+
+      - name: Set job URL
+        id: set-url
+        run: |
+          echo "url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $GITHUB_OUTPUT
+
+  simulate-prod:
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.act-prod.outputs.status }}
+      url: ${{ steps.set-url.outputs.url }}
+      logs: ${{ steps.act-prod.outputs.logs }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install act
+        run: |
+          curl -s https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash
+
+      - name: Run act with prod secrets
+        id: act-prod
+        run: |
+          if act pull_request --secret-file .secrets.prod --dryrun > act-prod.log; then
+            echo "status=success" >> $GITHUB_OUTPUT
+          else
+            echo "status=failure" >> $GITHUB_OUTPUT
+          fi
+          echo "logs=$(tail -n 20 act-prod.log | sed ':a;N;$!ba;s/\n/\\n/g')" >> $GITHUB_OUTPUT
+
+      - name: Set job URL
+        id: set-url
+        run: |
+          echo "url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $GITHUB_OUTPUT
+
+  summarize:
+    runs-on: ubuntu-latest
+    needs: [simulate-dev, simulate-staging, simulate-prod]
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const devStatus = "${{ needs.simulate-dev.outputs.status }}" === "success" ? "✅" : "❌";
+            const stagingStatus = "${{ needs.simulate-staging.outputs.status }}" === "success" ? "✅" : "❌";
+            const prodStatus = "${{ needs.simulate-prod.outputs.status }}" === "success" ? "✅" : "❌";
+
+            const devUrl = "${{ needs.simulate-dev.outputs.url }}";
+            const stagingUrl = "${{ needs.simulate-staging.outputs.url }}";
+            const prodUrl = "${{ needs.simulate-prod.outputs.url }}";
+
+            const devLogs = "${{ needs.simulate-dev.outputs.logs }}";
+            const stagingLogs = "${{ needs.simulate-staging.outputs.logs }}";
+            const prodLogs = "${{ needs.simulate-prod.outputs.logs }}";
+
+            const body = `🧪 **Act Simulation Results**\n\n- **Dev:** ${devStatus} [View Logs](${devUrl})\n- **Staging:** ${stagingStatus} [View Logs](${stagingUrl})\n- **Prod:** ${prodStatus} [View Logs](${prodUrl})\n\n<details>\n<summary>Expand Dev Logs</summary>\n\n\`\`\`\n${devLogs}\n\`\`\`\n</details>\n\n<details>\n<summary>Expand Staging Logs</summary>\n\n\`\`\`\n${stagingLogs}\n\`\`\`\n</details>\n\n<details>\n<summary>Expand Prod Logs</summary>\n\n\`\`\`\n${prodLogs}\n\`\`\`\n</details>`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+
+            const botComment = comments.find(c =>
+              c.user.login === 'github-actions[bot]' &&
+              c.body.includes('Act Simulation Results')
+            );
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                comment_id: botComment.id,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body
+              });
+            }

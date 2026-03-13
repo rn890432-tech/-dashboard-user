@@ -1,0 +1,43 @@
+.user-hud-label {
+  padding: 4px 10px;
+  background: rgba(0, 40, 80, 0.7);
+  border-left: 3px solid #00ffff;
+  color: white;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  pointer-events: none;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.dept-tag {
+  color: #00ffff;
+  margin-right: 6px;
+  font-weight: bold;
+}
+
+.user-hud-label.targeted-alert {
+  background: rgba(150, 0, 0, 0.8);
+  border-left: 3px solid #ff4444;
+  box-shadow: 0 0 15px #ff0000;
+  transform: scale(1.2);
+  z-index: 9999;
+}
+
+.targeted-alert .dept-tag {
+  color: #ffffff;
+}
+
+.threat-ping {
+  font-size: 8px;
+  color: #ff4444;
+  font-weight: bold;
+  margin-top: 4px;
+  animation: blink 0.5s infinite;
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}

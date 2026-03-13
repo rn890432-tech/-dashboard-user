@@ -1,0 +1,63 @@
+name: Deploy Comparison Chart
+
+on:
+  workflow_run:
+    workflows: ["Production Deploy"]
+    types:
+      - completed
+
+jobs:
+  generate-comparison-chart:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install Python & matplotlib
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip3 install matplotlib
+
+      - name: Generate comparison chart with shaded thresholds
+        run: |
+          python3 - <<'EOF'
+          import matplotlib.pyplot as plt
+
+          def read_durations(file):
+              try:
+                  with open(file) as f:
+                      return [int(x.strip()) for x in f if x.strip()]
+              except FileNotFoundError:
+                  return []
+
+          staging = read_durations("durations-staging.txt")
+          production = read_durations("durations-production.txt")
+
+          plt.figure(figsize=(7,5))
+          plt.plot(staging, marker='o', label="Staging", color="blue")
+          plt.plot(production, marker='o', label="Production", color="red")
+
+          # Threshold lines
+          plt.axhline(y=180, color="blue", linestyle="--", label="Staging Threshold (180s)")
+          plt.axhline(y=120, color="red", linestyle="--", label="Production Threshold (120s)")
+
+          # Shaded danger zones
+          plt.axhspan(180, max(staging+production+[200]), facecolor="blue", alpha=0.1)
+          plt.axhspan(120, max(staging+production+[200]), facecolor="red", alpha=0.1)
+
+          plt.title("Deploy Duration Comparison with Danger Zones")
+          plt.xlabel("Run")
+          plt.ylabel("Duration (s)")
+          plt.legend()
+          plt.grid(True)
+          plt.savefig("docs/deploy-comparison.png")
+          EOF
+
+      - name: Commit & push chart to gh-pages
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add docs/deploy-comparison.png
+          git commit -m "Update deploy comparison chart with danger zones"
+          git push origin gh-pages

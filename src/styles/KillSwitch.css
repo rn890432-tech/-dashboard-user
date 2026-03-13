@@ -1,0 +1,41 @@
+.killswitch-wrapper {
+  position: absolute;
+  bottom: 40px;
+  right: 40px;
+  z-index: 2000;
+}
+
+.kill-button {
+  background: rgba(40, 0, 0, 0.8);
+  border: 2px solid #ff4444;
+  color: #ff4444;
+  padding: 15px 25px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: bold;
+  transition: all 0.2s;
+  box-shadow: 0 0 10px rgba(255, 68, 68, 0.2);
+}
+
+.kill-button:hover {
+  background: #ff4444;
+  color: white;
+  box-shadow: 0 0 30px rgba(255, 68, 68, 0.6);
+}
+
+.kill-button.active {
+  background: white;
+  color: black;
+  border-color: white;
+  transform: scale(0.95);
+}
+
+.override-glitch {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}

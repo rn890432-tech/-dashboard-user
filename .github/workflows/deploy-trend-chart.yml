@@ -1,0 +1,43 @@
+name: Deploy Duration Chart
+
+on:
+  workflow_run:
+    workflows: ["Production Deploy"]
+    types:
+      - completed
+
+jobs:
+  generate-chart:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install Python & matplotlib
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip3 install matplotlib
+
+      - name: Generate chart
+        run: |
+          python3 - <<'EOF'
+          import matplotlib.pyplot as plt
+          with open("durations.txt") as f:
+              durations = [int(x.strip()) for x in f if x.strip()]
+          plt.figure(figsize=(6,4))
+          plt.plot(durations, marker='o')
+          plt.title("Deploy Duration Trend")
+          plt.xlabel("Run")
+          plt.ylabel("Duration (s)")
+          plt.grid(True)
+          plt.savefig("docs/deploy-trend.png")
+          EOF
+
+      - name: Commit & push chart to gh-pages
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add docs/deploy-trend.png
+          git commit -m "Update deploy trend chart"
+          git push origin gh-pages

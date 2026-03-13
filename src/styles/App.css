@@ -1,0 +1,12 @@
+body {
+  margin: 0;
+  font-family: 'JetBrains Mono', monospace;
+  background: #0a0a23;
+}
+
+.soc-dashboard.responsive-layout {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}

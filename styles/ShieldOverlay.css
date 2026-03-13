@@ -1,0 +1,57 @@
+.shield-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.5s ease-in-out;
+}
+
+.shield-container.active-pulse {
+  background: radial-gradient(circle, transparent 40%, rgba(0, 255, 255, 0.05) 100%);
+  box-shadow: inset 0 0 100px rgba(0, 255, 255, 0.3);
+  backdrop-filter: blur(1px);
+}
+
+.warning-banner {
+  position: absolute;
+  top: 10%;
+  padding: 20px 40px;
+  background: rgba(0, 20, 40, 0.8);
+  border: 1px solid #00ffff;
+  color: #00ffff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+  clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+  animation: slide-down 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes slide-down {
+  0% { transform: translateY(-100px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.shield-container::after {
+  content: "";
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent, rgba(0, 255, 255, 0.1), transparent);
+  animation: scan 4s linear infinite;
+  opacity: 0.3;
+}
+
+@keyframes scan {
+  0% { top: -100%; }
+  100% { top: 100%; }
+}

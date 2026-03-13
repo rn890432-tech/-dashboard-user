@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= recipe.title %> - Recipe Details</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header>
+    <h1><%= recipe.title %></h1>
+    <a href="/" class="back-btn">&larr; Back to Recipes</a>
+  </header>
+  <main>
+    <p class="desc"><%= recipe.description %></p>
+    <div class="meta">
+      <strong>Ingredients:</strong>
+      <span><%= recipe.ingredients %></span>
+    </div>
+    <div class="meta">
+      <strong>Instructions:</strong>
+      <span><%= recipe.instructions %></span>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2026 Recipe Share</p>
+  </footer>
+</body>
+</html>

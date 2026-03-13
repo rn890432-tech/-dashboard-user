@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Recipe</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Add a Recipe</h1>
+    <a href="/" class="back-btn">Back to Recipes</a>
+  </header>
+  <main>
+    <form class="recipe-form" action="/add" method="POST">
+      <label>Title
+        <input type="text" name="title" required>
+      </label>
+      <label>Description
+        <input type="text" name="description" required>
+      </label>
+      <label>Ingredients
+        <textarea name="ingredients" required></textarea>
+      </label>
+      <label>Instructions
+        <textarea name="instructions" required></textarea>
+      </label>
+      <button type="submit">Add Recipe</button>
+    </form>
+  </main>
+  <footer>
+    <p>&copy; 2026 Recipe Share</p>
+  </footer>
+</body>
+</html>
