@@ -205,50 +205,72 @@ jobs:
   notify-slow-slack:
     name: Notify Slack - Slow Deploy
     needs: check-thresholds
-    if: needs.check-thresholds.outputs.alert == 'true' && secrets.SLACK_WEBHOOK_URL != ''
+    if: needs.check-thresholds.outputs.alert == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Notify Slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo "SLACK_WEBHOOK_URL not set; skipping Slack notify."
+            exit 0
+          fi
           curl -X POST -H 'Content-type: application/json' \
           --data '{"text":"⚠️ Slow deploy in ${{ needs.check-thresholds.outputs.env }}. Duration: ${{ needs.deploy-production.outputs.deploy_duration }}s"}' \
-          ${{ secrets.SLACK_WEBHOOK_URL }}
+          "$SLACK_WEBHOOK_URL"
 
   notify-slow-teams:
     name: Notify Teams - Slow Deploy
     needs: check-thresholds
-    if: needs.check-thresholds.outputs.alert == 'true' && secrets.TEAMS_WEBHOOK_URL != ''
+    if: needs.check-thresholds.outputs.alert == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Notify Teams
+        env:
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
         run: |
+          if [ -z "$TEAMS_WEBHOOK_URL" ]; then
+            echo "TEAMS_WEBHOOK_URL not set; skipping Teams notify."
+            exit 0
+          fi
           curl -H 'Content-Type: application/json' \
           -d '{"@type":"MessageCard","@context":"http://schema.org/extensions","summary":"Slow Deploy","themeColor":"FFA500","title":"⚠️ Slow deploy in ${{ needs.check-thresholds.outputs.env }}","sections":[{"facts":[{"name":"Duration","value":"${{ needs.deploy-production.outputs.deploy_duration }}s"},{"name":"Rolling Avg","value":"${{ needs.rolling-average.outputs.rolling_avg }}s"}]}]}' \
-          ${{ secrets.TEAMS_WEBHOOK_URL }}
+          "$TEAMS_WEBHOOK_URL"
 
   notify-production-slack:
     name: Notify Slack - Production Done
     needs: [deploy-production, rolling-average]
-    if: secrets.SLACK_WEBHOOK_URL != ''
     runs-on: ubuntu-latest
     steps:
       - name: Notify Slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo "SLACK_WEBHOOK_URL not set; skipping Slack notify."
+            exit 0
+          fi
           curl -X POST -H 'Content-type: application/json' \
           --data '{"text":"🚀 Production deploy completed in ${{ needs.deploy-production.outputs.deploy_duration }}s (avg last 5: ${{ needs.rolling-average.outputs.rolling_avg }}s)"}' \
-          ${{ secrets.SLACK_WEBHOOK_URL }}
+          "$SLACK_WEBHOOK_URL"
 
   notify-production-teams:
     name: Notify Teams - Production Done
     needs: [deploy-production, rolling-average]
-    if: secrets.TEAMS_WEBHOOK_URL != ''
     runs-on: ubuntu-latest
     steps:
       - name: Notify Teams
+        env:
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
         run: |
+          if [ -z "$TEAMS_WEBHOOK_URL" ]; then
+            echo "TEAMS_WEBHOOK_URL not set; skipping Teams notify."
+            exit 0
+          fi
           curl -H 'Content-Type: application/json' \
           -d '{"@type":"MessageCard","@context":"http://schema.org/extensions","summary":"Production Deployment","themeColor":"00CC66","title":"🚀 Production deployment completed","sections":[{"facts":[{"name":"Duration","value":"${{ needs.deploy-production.outputs.deploy_duration }}s"},{"name":"Rolling Avg (last 5)","value":"${{ needs.rolling-average.outputs.rolling_avg }}s"}]}]}' \
-          ${{ secrets.TEAMS_WEBHOOK_URL }}
+          "$TEAMS_WEBHOOK_URL"
 
   # ─── Failure Reporting ───────────────────────────────────────────────────────
 
@@ -272,23 +294,35 @@ jobs:
   notify-failure-slack:
     name: Notify Slack - Failure
     needs: failure-summary
-    if: always() && needs.failure-summary.result == 'success' && secrets.SLACK_WEBHOOK_URL != ''
+    if: always() && needs.failure-summary.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Notify Slack of Failures
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo "SLACK_WEBHOOK_URL not set; skipping Slack failure notify."
+            exit 0
+          fi
           curl -X POST -H 'Content-type: application/json' \
           --data '{"text":"❌ Workflow failed! Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' \
-          ${{ secrets.SLACK_WEBHOOK_URL }}
+          "$SLACK_WEBHOOK_URL"
 
   notify-failure-teams:
     name: Notify Teams - Failure
     needs: failure-summary
-    if: always() && needs.failure-summary.result == 'success' && secrets.TEAMS_WEBHOOK_URL != ''
+    if: always() && needs.failure-summary.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Notify Teams of Failures
+        env:
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
         run: |
+          if [ -z "$TEAMS_WEBHOOK_URL" ]; then
+            echo "TEAMS_WEBHOOK_URL not set; skipping Teams failure notify."
+            exit 0
+          fi
           curl -H 'Content-Type: application/json' \
           -d '{"@type":"MessageCard","@context":"http://schema.org/extensions","summary":"Workflow Failures","themeColor":"FF0000","title":"❌ Workflow failed","sections":[{"facts":[{"name":"Run","value":"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"}]}]}' \
-          ${{ secrets.TEAMS_WEBHOOK_URL }}
+          "$TEAMS_WEBHOOK_URL"
