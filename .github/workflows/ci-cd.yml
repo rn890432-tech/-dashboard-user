@@ -77,29 +77,16 @@ jobs:
       - name: Deploy to Staging
         run: vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
       - name: Notify Slack - Staging Live
-        if: ${{ secrets.SLACK_WEBHOOK_URL != '' }}
-        uses: slackapi/slack-github-action@v1.24.0
-        with:
-          payload: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": { "type": "mrkdwn", "text": "🚀 *Staging deployment complete!*" }
-                },
-                {
-                  "type": "section",
-                  "fields": [
-                    { "type": "mrkdwn", "text": "*Branch:* ${{ github.ref_name }}" },
-                    { "type": "mrkdwn", "text": "*Triggered by:* <@${{ github.actor }}>" },
-                    { "type": "mrkdwn", "text": "*Commit:* <${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.sha }}>" },
-                    { "type": "mrkdwn", "text": "*Run:* <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View>" }
-                  ]
-                }
-              ]
-            }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo "SLACK_WEBHOOK_URL not set; skipping staging Slack notify."
+            exit 0
+          fi
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"🚀 Staging deployment complete. Branch: ${{ github.ref_name }} | Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' \
+          "$SLACK_WEBHOOK_URL"
 
   deploy-production:
     name: Deploy Production
@@ -145,15 +132,16 @@ jobs:
           }'
 
       - name: Notify Slack - Production Live
-        if: ${{ secrets.SLACK_WEBHOOK_URL != '' }}
-        uses: slackapi/slack-github-action@v1.24.0
-        with:
-          payload: |
-            {
-              "text": "✅ Production deployment complete! Duration: ${{ steps.duration.outputs.deploy_duration }}s"
-            }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo "SLACK_WEBHOOK_URL not set; skipping production Slack notify."
+            exit 0
+          fi
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"✅ Production deployment complete! Duration: ${{ steps.duration.outputs.deploy_duration }}s"}' \
+          "$SLACK_WEBHOOK_URL"
 
   # ─── Rolling Average ──────────────────────────────────────────────────────────
 
