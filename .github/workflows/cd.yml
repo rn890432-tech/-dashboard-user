@@ -1,8 +1,10 @@
-name: CD
+name: CD - Deploy
+
+# CD workflow: deploy orchestration, approvals, and post-deploy checks.
 
 on:
     workflow_run:
-        workflows: ["CI"]
+        workflows: ["CI - Build & Test"]
         types: [completed]
     workflow_dispatch:
         inputs:
@@ -14,6 +16,8 @@ on:
                 options:
                     - staging
                     - production
+
+run-name: CD • ${{ github.event_name }} • ${{ github.ref_name }}
 
 concurrency:
     group: cd-${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch || github.ref_name }}

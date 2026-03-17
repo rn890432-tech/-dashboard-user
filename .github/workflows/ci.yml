@@ -1,4 +1,6 @@
-name: CI
+name: CI - Build & Test
+
+# CI workflow: build, unit tests, and optional E2E checks.
 
 on:
     push:
@@ -6,6 +8,8 @@ on:
             - main
             - staging
     pull_request:
+
+run-name: CI • ${{ github.event_name }} • ${{ github.ref_name }}
 
 concurrency:
     group: ci-${{ github.ref }}
