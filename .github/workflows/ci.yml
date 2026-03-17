@@ -1,0 +1,90 @@
+name: CI
+
+on:
+    push:
+        branches:
+            - main
+            - staging
+    pull_request:
+
+concurrency:
+    group: ci-${{ github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
+
+jobs:
+    build-and-test:
+        name: Build and Test
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                node: [20]
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ matrix.node }}
+                  cache: npm
+                  cache-dependency-path: package-lock.json
+
+            - name: Cache node_modules
+              uses: actions/cache@v4
+              with:
+                  path: node_modules
+                  key: node-modules-${{ runner.os }}-${{ matrix.node }}-${{ hashFiles('package-lock.json') }}
+                  restore-keys: |
+                      node-modules-${{ runner.os }}-${{ matrix.node }}-
+
+            - name: Cache Cypress binary
+              uses: actions/cache@v4
+              with:
+                  path: ~/.cache/Cypress
+                  key: cypress-${{ runner.os }}-${{ matrix.node }}-${{ hashFiles('package-lock.json') }}
+                  restore-keys: |
+                      cypress-${{ runner.os }}-${{ matrix.node }}-
+
+            - name: Install dependencies
+              run: npm ci --prefer-offline --no-audit
+
+            - name: Run unit tests (Jest)
+              run: node ./node_modules/react-scripts/bin/react-scripts.js test --ci --passWithNoTests
+
+            - name: Build app
+              run: npm run build --if-present
+
+            - name: Detect Cypress specs
+              id: detect_specs
+              run: |
+                  if find cypress -type f \( -name "*.cy.js" -o -name "*.cy.jsx" -o -name "*.cy.ts" -o -name "*.cy.tsx" \) | grep -q .; then
+                    echo "has_specs=true" >> $GITHUB_OUTPUT
+                  else
+                    echo "has_specs=false" >> $GITHUB_OUTPUT
+                  fi
+
+            - name: Run Cypress E2E
+              if: steps.detect_specs.outputs.has_specs == 'true'
+              uses: cypress-io/github-action@v6
+              with:
+                  start: npm start
+                  wait-on: http://localhost:3000
+                  browser: chrome
+                  record: false
+
+            - name: Skip Cypress (no specs found)
+              if: steps.detect_specs.outputs.has_specs != 'true'
+              run: echo "No Cypress specs found; skipping E2E execution."
+
+            - name: Upload Cypress Artifacts
+              if: always() && steps.detect_specs.outputs.has_specs == 'true'
+              uses: actions/upload-artifact@v4
+              with:
+                  name: cypress-artifacts-${{ runner.os }}-${{ matrix.node }}
+                  path: |
+                      cypress/screenshots
+                      cypress/videos
+                      cypress/logs
