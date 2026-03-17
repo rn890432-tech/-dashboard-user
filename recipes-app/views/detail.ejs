@@ -10,8 +10,15 @@
   <header>
     <h1><%= recipe.title %></h1>
     <a href="/" class="back-btn">&larr; Back to Recipes</a>
+    <a href="/recipe/<%= recipe.id %>/edit" class="edit-btn">Edit</a>
+    <form action="/recipe/<%= recipe.id %>/delete" method="POST" style="display:inline">
+      <button type="submit" class="delete-btn" onclick="return confirm('Delete this recipe?')">Delete</button>
+    </form>
   </header>
   <main>
+    <% if (recipe.imageUrl) { %>
+      <img src="<%= recipe.imageUrl %>" alt="<%= recipe.title %>" class="recipe-img" />
+    <% } %>
     <p class="desc"><%= recipe.description %></p>
     <div class="meta">
       <strong>Ingredients:</strong>

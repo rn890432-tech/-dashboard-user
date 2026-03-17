@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  map-socket-server:
+    build: ./cyberchef-platform/services/analytics
+    command: node mapSocketServer.js
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./cyberchef-platform/services/analytics:/app
+
+  map-analytics-api:
+    build: ./cyberchef-platform/services/analytics
+    command: node mapAnalytics.js
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./cyberchef-platform/services/analytics:/app
+
+  frontend:
+    build: ./mobile-app
+    command: npm start
+    ports:
+      - "3002:3000"
+    volumes:
+      - ./mobile-app:/app
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+
+  db:
+    image: mongo
+    ports:
+      - "27017:27017"
+
+# Optional: Add nginx for reverse proxy
+#  nginx:
+#    image: nginx
+#    ports:
+#      - "80:80"
+#    volumes:
+#      - ./nginx.conf:/etc/nginx/nginx.conf

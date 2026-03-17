@@ -12,7 +12,7 @@
     <a href="/" class="back-btn">Back to Recipes</a>
   </header>
   <main>
-    <form class="recipe-form" action="/add" method="POST">
+    <form class="recipe-form" action="/add" method="POST" enctype="multipart/form-data">
       <label>Title
         <input type="text" name="title" required>
       </label>
@@ -24,6 +24,9 @@
       </label>
       <label>Instructions
         <textarea name="instructions" required></textarea>
+      </label>
+      <label>Image
+        <input type="file" name="image" accept="image/*">
       </label>
       <button type="submit">Add Recipe</button>
     </form>

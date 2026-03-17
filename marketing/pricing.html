@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO -->
+  <title>Pricing — CyberSentinel AI</title>
+  <meta name="description" content="Transparent pricing for every security team. From startup to enterprise — choose the CyberSentinel AI plan that fits your SOC." />
+  <link rel="canonical" href="https://cybersentinel.ai/pricing" />
+  <meta property="og:title"       content="Pricing — CyberSentinel AI" />
+  <meta property="og:description" content="Transparent pricing for every security team. Free trial available." />
+  <meta property="og:url"         content="https://cybersentinel.ai/pricing" />
+  <meta property="og:image"       content="https://cybersentinel.ai/assets/og-image.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="icon" href="assets/favicon.ico" type="image/x-icon" />
+
+  <style>
+    .toggle-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 64px;
+    }
+    .toggle-label {
+      font-size: 14px;
+      color: var(--text-mid);
+      font-weight: 600;
+    }
+    .toggle-switch {
+      position: relative;
+      width: 48px;
+      height: 26px;
+    }
+    .toggle-switch input { display: none; }
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: var(--bg-2);
+      border: 1px solid var(--border-hi);
+      border-radius: 13px;
+      cursor: pointer;
+      transition: background var(--transition);
+    }
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--text-lo);
+      transition: transform var(--transition), background var(--transition);
+    }
+    .toggle-switch input:checked + .toggle-slider { background: #0ea5e9; }
+    .toggle-switch input:checked + .toggle-slider::before {
+      transform: translateX(22px);
+      background: #020812;
+    }
+    .toggle-save {
+      font-size: 11px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: var(--accent-3);
+      background: #22c55e1a;
+      border: 1px solid #22c55e33;
+      border-radius: 3px;
+      padding: 2px 8px;
+    }
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+    .faq-q {
+      width: 100%;
+      background: none;
+      border: none;
+      color: var(--text-hi);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      font-weight: 600;
+      text-align: left;
+      padding: 20px 0;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      transition: color var(--transition);
+    }
+    .faq-q:hover { color: var(--accent); }
+    .faq-chevron {
+      font-size: 12px;
+      transition: transform var(--transition);
+      color: var(--text-lo);
+    }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+      font-size: 14px;
+      color: var(--text-mid);
+      line-height: 1.8;
+    }
+    .faq-item.open .faq-a {
+      max-height: 300px;
+      padding-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV (shared) -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <a href="/" class="nav-logo" aria-label="CyberSentinel AI home">
+    <span class="shield" aria-hidden="true">🛡</span>
+    Cyber<span>Sentinel</span>&nbsp;AI
+  </a>
+  <div class="nav-links">
+    <a href="/">Product</a>
+    <a href="/pricing.html" class="active">Pricing</a>
+    <a href="/demo.html">Demo</a>
+    <a href="/contact.html">Contact</a>
+    <a href="#">Docs</a>
+  </div>
+  <div class="nav-cta">
+    <a href="/demo.html" class="btn btn-outline btn-sm">Live Demo</a>
+    <a href="/contact.html" class="btn btn-primary btn-sm">Start Free Trial</a>
+  </div>
+  <button class="nav-hamburger" aria-label="Open menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- PAGE HERO -->
+<section style="padding:140px 0 60px;text-align:center;background:radial-gradient(ellipse 60% 50% at 50% 0%,#38bdf90d 0%,transparent 70%),var(--bg-0)" aria-labelledby="pricing-title">
+  <div class="container">
+    <div class="section-eyebrow"><span class="badge">💳 Pricing</span></div>
+    <h1 class="section-title" id="pricing-title" style="margin-bottom:16px">
+      Simple, transparent pricing
+    </h1>
+    <p class="section-sub" style="margin-bottom:40px">
+      No per-seat surprises. No hidden fees. Pick the plan that fits your team —
+      upgrade or downgrade anytime.
+    </p>
+
+    <!-- Billing toggle -->
+    <div class="toggle-wrap">
+      <span class="toggle-label">Monthly</span>
+      <label class="toggle-switch" aria-label="Toggle annual billing">
+        <input type="checkbox" id="billingToggle" />
+        <span class="toggle-slider"></span>
+      </label>
+      <span class="toggle-label">Annual</span>
+      <span class="toggle-save">Save 20%</span>
+    </div>
+
+    <!-- Pricing cards -->
+    <div class="pricing-grid" style="max-width:1100px;margin:0 auto">
+
+      <!-- Starter -->
+      <div class="plan-card">
+        <div class="plan-name">Starter</div>
+        <p style="font-size:13px;color:var(--text-lo);margin-bottom:8px">For growing security teams</p>
+        <div class="plan-price">
+          <span class="plan-amount" id="starter-price">$499</span>
+          <span class="plan-period" id="starter-period">/month</span>
+        </div>
+        <p class="plan-desc">
+          Everything you need to go from reactive alerts to proactive defense.
+        </p>
+        <a href="/contact.html" class="btn btn-outline" style="width:100%;justify-content:center">Start Free Trial</a>
+        <hr class="plan-divider" />
+        <ul class="plan-features">
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>Up to 3 analysts</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>500,000 events/day</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>AI SOC Analyst (basic)</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>Global attack map</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>50 detection rules</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>10 playbook actions</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>Email + Slack alerts</li>
+          <li class="plan-feat"><span class="plan-feat-icon muted">✗</span><span style="color:var(--text-lo)">Campaign correlation</span></li>
+          <li class="plan-feat"><span class="plan-feat-icon muted">✗</span><span style="color:var(--text-lo)">SOC Command Center</span></li>
+          <li class="plan-feat"><span class="plan-feat-icon muted">✗</span><span style="color:var(--text-lo)">SIEM / SOAR integrations</span></li>
+        </ul>
+      </div>
+
+      <!-- Professional (popular) -->
+      <div class="plan-card popular" style="--card-glow:#38bdf80d">
+        <div class="plan-popular-badge">⭐ Most Popular</div>
+        <div class="plan-name" style="color:var(--accent)">Professional</div>
+        <p style="font-size:13px;color:var(--text-lo);margin-bottom:8px">For established SOC teams</p>
+        <div class="plan-price">
+          <span class="plan-amount" id="pro-price" style="color:var(--accent)">$1,499</span>
+          <span class="plan-period" id="pro-period">/month</span>
+        </div>
+        <p class="plan-desc">
+          Full AI power and real-time threat correlation for teams that can't afford misses.
+        </p>
+        <a href="/contact.html" class="btn btn-primary" style="width:100%;justify-content:center">Start Free Trial</a>
+        <hr class="plan-divider" />
+        <ul class="plan-features">
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>Up to 15 analysts</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>5M events/day</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>AI SOC Analyst (full)</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>Global attack map + 3D globe</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>Unlimited detection rules</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>100+ playbook actions</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>Campaign correlation engine</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>SOC Command Center</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>Investigation graph</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>SIEM / SOAR / EDR integrations</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>Threat intel feeds (50+)</li>
+          <li class="plan-feat"><span class="plan-feat-icon muted">✗</span><span style="color:var(--text-lo)">Dedicated CSM</span></li>
+          <li class="plan-feat"><span class="plan-feat-icon muted">✗</span><span style="color:var(--text-lo)">On-prem deployment</span></li>
+        </ul>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="plan-card">
+        <div class="plan-name">Enterprise</div>
+        <p style="font-size:13px;color:var(--text-lo);margin-bottom:8px">For large-scale security operations</p>
+        <div class="plan-price">
+          <span class="plan-amount" style="font-size:32px">Custom</span>
+        </div>
+        <p class="plan-desc">
+          Unlimited scale, dedicated support, on-prem deployment, and SLA guarantees for
+          mission-critical environments.
+        </p>
+        <a href="/contact.html" class="btn btn-violet" style="width:100%;justify-content:center">Talk to Sales</a>
+        <hr class="plan-divider" />
+        <ul class="plan-features">
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>Unlimited analysts</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>Unlimited events/day</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>Everything in Professional</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>Dedicated Customer Success Manager</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>On-prem + air-gapped deployment</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>Custom AI model fine-tuning</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>SSO + SCIM provisioning</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>99.99% uptime SLA</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>24/7 Priority support</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>Multi-tenant management</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>Custom integrations</li>
+          <li class="plan-feat"><span class="plan-feat-icon">✓</span>Executive risk reporting</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <p style="font-size:13px;color:var(--text-lo);margin-top:32px">
+      All plans include a 14-day free trial — no credit card required. &nbsp;·&nbsp;
+      SOC2 Type II &nbsp;·&nbsp; GDPR compliant
+    </p>
+  </div>
+</section>
+
+<!-- COMPARISON TABLE -->
+<section style="padding:80px 0;border-top:1px solid var(--border)" aria-labelledby="compare-title">
+  <div class="container">
+    <h2 class="section-title" id="compare-title" style="margin-bottom:8px">Compare plans</h2>
+    <p class="section-sub" style="margin-bottom:48px">Detailed feature breakdown to help you choose</p>
+
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:14px">
+        <thead>
+          <tr style="border-bottom:2px solid var(--border)">
+            <th style="text-align:left;padding:12px 16px;color:var(--text-lo);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;width:40%">Feature</th>
+            <th style="padding:12px 16px;color:var(--text-mid);font-weight:700">Starter</th>
+            <th style="padding:12px 16px;color:var(--accent);font-weight:700">Professional</th>
+            <th style="padding:12px 16px;color:var(--accent-2);font-weight:700">Enterprise</th>
+          </tr>
+        </thead>
+        <tbody id="compareBody">
+          <!-- Rows injected by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section style="padding:80px 0;background:var(--bg-1);border-top:1px solid var(--border);border-bottom:1px solid var(--border)" aria-labelledby="faq-title">
+  <div class="container" style="max-width:760px">
+    <h2 class="section-title" id="faq-title" style="margin-bottom:48px">Frequently asked questions</h2>
+
+    <div class="faq-item">
+      <button class="faq-q" aria-expanded="false">
+        Do I need a credit card to start the trial?
+        <span class="faq-chevron" aria-hidden="true">▼</span>
+      </button>
+      <div class="faq-a">
+        No. The 14-day free trial starts immediately — no credit card or payment information
+        required. You'll only be asked for billing details when you decide to upgrade.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" aria-expanded="false">
+        Can I change plans after I sign up?
+        <span class="faq-chevron" aria-hidden="true">▼</span>
+      </button>
+      <div class="faq-a">
+        Yes. You can upgrade or downgrade at any time from your account settings. When upgrading,
+        the new features are available immediately and you're billed a prorated amount for the
+        remainder of your billing period. Downgrades take effect at the start of the next cycle.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" aria-expanded="false">
+        What counts as an "event"?
+        <span class="faq-chevron" aria-hidden="true">▼</span>
+      </button>
+      <div class="faq-a">
+        An event is any log entry, telemetry record, or network flow ingested by the CyberSentinel AI
+        pipeline — whether from endpoints, firewalls, cloud APIs, or identity providers. Events
+        normalized duplicates count as one.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" aria-expanded="false">
+        Is on-premises deployment available?
+        <span class="faq-chevron" aria-hidden="true">▼</span>
+      </button>
+      <div class="faq-a">
+        On-premises and air-gapped deployment is available on the Enterprise plan. Our team provides
+        full installation, hardening, and ongoing operational support. Docker and Kubernetes-based
+        deployment packages are provided.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" aria-expanded="false">
+        Do you offer discounts for non-profits or educational institutions?
+        <span class="faq-chevron" aria-hidden="true">▼</span>
+      </button>
+      <div class="faq-a">
+        Yes. We offer 40% discounts for verified non-profits and educational institutions.
+        Contact <a href="/contact.html">our sales team</a> with proof of eligibility and we'll
+        apply the discount to any plan.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" aria-expanded="false">
+        What integrations are included?
+        <span class="faq-chevron" aria-hidden="true">▼</span>
+      </button>
+      <div class="faq-a">
+        Professional and Enterprise plans include pre-built integrations with Splunk, Elastic SIEM,
+        Microsoft Sentinel, CrowdStrike, SentinelOne, Okta, AWS GuardDuty, Azure Defender, Palo
+        Alto Cortex XSOAR, and 50+ threat intelligence feeds. Custom integrations are available
+        on Enterprise via our Connector SDK.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section class="cta-band" aria-labelledby="pricing-cta-title">
+  <div class="container">
+    <span class="badge" style="margin-bottom:20px;display:inline-flex">🚀 Free 14-Day Trial</span>
+    <h2 class="cta-title" id="pricing-cta-title">Start defending smarter today</h2>
+    <p class="cta-sub">Join 500+ enterprise security teams using CyberSentinel AI.</p>
+    <div class="cta-actions">
+      <a href="/contact.html" class="btn btn-primary btn-lg">Start Free Trial</a>
+      <a href="/demo.html"    class="btn btn-outline btn-lg">See a Live Demo</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-weight:700;font-size:16px;color:var(--text-hi)">
+          <span style="font-size:20px">🛡</span>
+          Cyber<span style="color:var(--accent)">Sentinel</span>&nbsp;AI
+        </div>
+        <p class="footer-brand-desc">Autonomous AI Cyber Defense Platform. Trusted by 500+ enterprise security teams.</p>
+      </div>
+      <div>
+        <div class="footer-heading">Product</div>
+        <nav class="footer-links">
+          <a href="/#features">AI SOC Analyst</a>
+          <a href="/#features">Attack Globe</a>
+          <a href="/#features">Detection Rules</a>
+          <a href="/#features">Playbooks</a>
+        </nav>
+      </div>
+      <div>
+        <div class="footer-heading">Company</div>
+        <nav class="footer-links">
+          <a href="#">About</a>
+          <a href="#">Blog</a>
+          <a href="/contact.html">Contact</a>
+        </nav>
+      </div>
+      <div>
+        <div class="footer-heading">Resources</div>
+        <nav class="footer-links">
+          <a href="#">Documentation</a>
+          <a href="/pricing.html">Pricing</a>
+          <a href="#">Status</a>
+        </nav>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 CyberSentinel AI. All rights reserved.</span>
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">SOC 2</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Billing toggle - monthly vs annual pricing
+const PRICES = {
+  starter:  { monthly: '$499',   annual: '$399'  },
+  pro:      { monthly: '$1,499', annual: '$1,199' }
+};
+
+const toggle = document.getElementById('billingToggle');
+function updatePrices() {
+  const annual = toggle.checked;
+  document.getElementById('starter-price').textContent  = annual ? PRICES.starter.annual  : PRICES.starter.monthly;
+  document.getElementById('starter-period').textContent = annual ? '/month, billed annually' : '/month';
+  document.getElementById('pro-price').textContent      = annual ? PRICES.pro.annual     : PRICES.pro.monthly;
+  document.getElementById('pro-period').textContent     = annual ? '/month, billed annually' : '/month';
+}
+toggle.addEventListener('change', updatePrices);
+
+// Comparison table
+const COMPARE_ROWS = [
+  ['Analysts',            '3',          '15',          'Unlimited'],
+  ['Events / day',        '500K',       '5M',          'Unlimited'],
+  ['Detection rules',     '50',         'Unlimited',   'Unlimited'],
+  ['Playbook actions',    '10',         '100+',        'Unlimited'],
+  ['AI SOC Analyst',      'Basic',      'Full',        'Full + fine-tuning'],
+  ['Global attack map',   '✓',          '✓',           '✓'],
+  ['3D Attack Globe',     '—',          '✓',           '✓'],
+  ['Campaign correlation','—',          '✓',           '✓'],
+  ['SOC Command Center',  '—',          '✓',           '✓'],
+  ['Investigation graph', '—',          '✓',           '✓'],
+  ['Threat intel feeds',  '5',          '50+',         '50+ + custom'],
+  ['SIEM / SOAR integr.', '—',          '✓',           '✓'],
+  ['SSO + SCIM',          '—',          '—',           '✓'],
+  ['On-prem / air-gapped','—',          '—',           '✓'],
+  ['Dedicated CSM',       '—',          '—',           '✓'],
+  ['SLA',                 '99.9%',      '99.9%',       '99.99%'],
+  ['Support',             'Email',      'Email + Chat','Priority 24/7'],
+];
+
+const tbody = document.getElementById('compareBody');
+COMPARE_ROWS.forEach(([feat, starter, pro, enterprise], i) => {
+  const bg = i % 2 === 0 ? 'var(--bg-1)' : 'var(--bg-0)';
+  const cell = (v, c) => {
+    const clr = v === '✓' ? 'var(--accent-3)'
+              : v === '—' ? 'var(--text-lo)'
+              : c;
+    return `<td style="text-align:center;padding:11px 16px;color:${clr};font-family:${v==='✓'||v==='—'?'inherit':'var(--font-sans)'};font-size:13px">${v}</td>`;
+  };
+  tbody.innerHTML += `<tr style="background:${bg};border-bottom:1px solid var(--border)">
+    <td style="padding:11px 16px;font-size:13px;color:var(--text-mid)">${feat}</td>
+    ${cell(starter,'var(--text-mid)')}
+    ${cell(pro,'var(--accent)')}
+    ${cell(enterprise,'var(--accent-2)')}
+  </tr>`;
+});
+
+// FAQ accordion
+document.querySelectorAll('.faq-q').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.closest('.faq-item');
+    const open = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => {
+      i.classList.remove('open');
+      i.querySelector('.faq-q').setAttribute('aria-expanded','false');
+    });
+    if (!open) {
+      item.classList.add('open');
+      btn.setAttribute('aria-expanded','true');
+    }
+  });
+});
+
+// Nav hamburger (shared)
+document.querySelector('.nav-hamburger')?.addEventListener('click', function(){
+  const expanded = this.getAttribute('aria-expanded') === 'true';
+  this.setAttribute('aria-expanded', !expanded);
+  document.querySelector('.nav-links').style.display = expanded ? '' : 'flex';
+});
+</script>
+
+</body>
+</html>

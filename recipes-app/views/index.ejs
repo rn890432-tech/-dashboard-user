@@ -10,16 +10,28 @@
   <header>
     <h1>Recipe Share</h1>
     <form method="get" action="/" class="search-bar">
-      <input type="text" name="q" placeholder="Search recipes..." value="<%= q %>" />
+      <input type="text" name="q" placeholder="Search recipes..." value="<%= typeof q !== 'undefined' ? q : '' %>" />
       <button type="submit">Search</button>
     </form>
     <a href="/add" class="add-btn">Add Recipe</a>
+    <nav class="auth-nav">
+      <% if (typeof user !== 'undefined' && user) { %>
+        <span>Welcome, <%= user.username || user.displayName || user.name %>!</span>
+        <a href="/logout">Logout</a>
+      <% } else { %>
+        <a href="/login">Login</a> |
+        <a href="/register">Register</a>
+      <% } %>
+    </nav>
   </header>
   <main>
     <div class="recipes">
       <% recipes.forEach(recipe => { %>
         <div class="recipe-card">
           <h2><a href="/recipe/<%= recipe.id %>" class="recipe-link"><%= recipe.title %></a></h2>
+          <% if (recipe.imageUrl) { %>
+            <img src="<%= recipe.imageUrl %>" alt="<%= recipe.title %>" class="recipe-img" />
+          <% } %>
           <p class="desc"><%= recipe.description %></p>
         </div>
       <% }) %>

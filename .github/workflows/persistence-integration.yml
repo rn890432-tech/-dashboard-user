@@ -1,0 +1,30 @@
+name: Persistence Integration
+
+on:
+  pull_request:
+    paths:
+      - docker-compose.prod.yml
+      - cyberchef-platform/services/grocery-service/**
+      - cyberchef-platform/services/creator-marketplace-service/**
+      - scripts/integration/persistence-smoke.sh
+  push:
+    branches:
+      - main
+    paths:
+      - docker-compose.prod.yml
+      - cyberchef-platform/services/grocery-service/**
+      - cyberchef-platform/services/creator-marketplace-service/**
+      - scripts/integration/persistence-smoke.sh
+
+jobs:
+  persistence-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Run persistence and gateway smoke test
+        run: bash scripts/integration/persistence-smoke.sh

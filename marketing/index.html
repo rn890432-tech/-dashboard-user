@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ── Primary SEO ─────────────────────────────────────────────────── -->
+  <title>CyberSentinel AI — Autonomous AI Cyber Defense Platform</title>
+  <meta name="description" content="Detect, investigate, and stop cyber attacks in real time with AI. CyberSentinel AI is the autonomous SOC platform trusted by enterprise security teams worldwide." />
+  <meta name="keywords"    content="cybersecurity, AI SOC, threat detection, automated response, threat intelligence, attack map, SOC platform, SIEM, XDR" />
+  <meta name="author"      content="CyberSentinel AI" />
+  <link rel="canonical"    href="https://cybersentinel.ai/" />
+
+  <!-- ── OpenGraph ───────────────────────────────────────────────────── -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://cybersentinel.ai/" />
+  <meta property="og:title"       content="CyberSentinel AI — Autonomous AI Cyber Defense Platform" />
+  <meta property="og:description" content="Detect, investigate, and stop cyber attacks in real time with AI. Start your free trial today." />
+  <meta property="og:image"       content="https://cybersentinel.ai/assets/og-image.png" />
+  <meta property="og:site_name"   content="CyberSentinel AI" />
+
+  <!-- ── Twitter Card ────────────────────────────────────────────────── -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@cybersentinelai" />
+  <meta name="twitter:title"       content="CyberSentinel AI — Autonomous AI Cyber Defense Platform" />
+  <meta name="twitter:description" content="Detect, investigate, and stop cyber attacks in real time with AI." />
+  <meta name="twitter:image"       content="https://cybersentinel.ai/assets/og-image.png" />
+
+  <!-- ── Structured Data (Organization + SoftwareApplication) ────────── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://cybersentinel.ai/#org",
+        "name": "CyberSentinel AI",
+        "url": "https://cybersentinel.ai",
+        "logo": "https://cybersentinel.ai/assets/logo.png",
+        "sameAs": [
+          "https://twitter.com/cybersentinelai",
+          "https://linkedin.com/company/cybersentinelai"
+        ],
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "email": "hello@cybersentinel.ai",
+          "contactType": "sales"
+        }
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://cybersentinel.ai/#product",
+        "name": "CyberSentinel AI Platform",
+        "applicationCategory": "SecurityApplication",
+        "operatingSystem": "Web",
+        "description": "Autonomous AI Cyber Defense Platform — detect, investigate, and stop attacks in real time.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD",
+          "description": "Free trial available"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "reviewCount": "312"
+        }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://cybersentinel.ai/#website",
+        "url": "https://cybersentinel.ai",
+        "name": "CyberSentinel AI",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://cybersentinel.ai/search?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    ]
+  }
+  </script>
+
+  <!-- ── Assets ──────────────────────────────────────────────────────── -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="icon" href="assets/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+
+<!-- ══════════════════ NAVIGATION ══════════════════════════════════════ -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <a href="/" class="nav-logo" aria-label="CyberSentinel AI home">
+    <span class="shield" aria-hidden="true">🛡</span>
+    Cyber<span>Sentinel</span>&nbsp;AI
+  </a>
+  <div class="nav-links">
+    <a href="/" class="active">Product</a>
+    <a href="/pricing.html">Pricing</a>
+    <a href="/demo.html">Demo</a>
+    <a href="/contact.html">Contact</a>
+    <a href="#">Docs</a>
+  </div>
+  <div class="nav-cta">
+    <a href="/demo.html" class="btn btn-outline btn-sm">Live Demo</a>
+    <a href="#trial"     class="btn btn-primary btn-sm">Start Free Trial</a>
+  </div>
+  <button class="nav-hamburger" aria-label="Open menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ══════════════════ LIVE TICKER ══════════════════════════════════════ -->
+<div class="ticker-wrap" role="marquee" aria-label="Live threat activity feed" style="margin-top:60px">
+  <div class="ticker-track" id="tickerTrack">
+    <span class="ticker-item"><span class="t-red">⚠ CRITICAL</span>&nbsp;Brute-force detected — 192.168.4.11 → AD Controller</span>
+    <span class="ticker-item"><span class="t-ora">● HIGH</span>&nbsp;Lateral movement: SMB traversal across 7 hosts</span>
+    <span class="ticker-item"><span class="t-grn">✓ RESOLVED</span>&nbsp;Malicious IP 45.33.32.156 blocked automatically</span>
+    <span class="ticker-item"><span class="t-blu">🧠 AI</span>&nbsp;Threat cluster correlated: APT-29 TTP pattern identified</span>
+    <span class="ticker-item"><span class="t-red">⚠ CRITICAL</span>&nbsp;Data exfiltration attempt — 2.4 GB outbound to unknown host</span>
+    <span class="ticker-item"><span class="t-ora">● HIGH</span>&nbsp;Credential dump detected on WORKSTATION-07</span>
+    <span class="ticker-item"><span class="t-grn">✓ AUTO-REMEDIATED</span>&nbsp;Host isolated: FINANCE-PC-03</span>
+    <span class="ticker-item"><span class="t-blu">🧠 AI</span>&nbsp;False positive suppressed: 128 noisy rules tuned</span>
+    <!-- duplicate for seamless loop -->
+    <span class="ticker-item"><span class="t-red">⚠ CRITICAL</span>&nbsp;Brute-force detected — 192.168.4.11 → AD Controller</span>
+    <span class="ticker-item"><span class="t-ora">● HIGH</span>&nbsp;Lateral movement: SMB traversal across 7 hosts</span>
+    <span class="ticker-item"><span class="t-grn">✓ RESOLVED</span>&nbsp;Malicious IP 45.33.32.156 blocked automatically</span>
+    <span class="ticker-item"><span class="t-blu">🧠 AI</span>&nbsp;Threat cluster correlated: APT-29 TTP pattern identified</span>
+    <span class="ticker-item"><span class="t-red">⚠ CRITICAL</span>&nbsp;Data exfiltration attempt — 2.4 GB outbound to unknown host</span>
+    <span class="ticker-item"><span class="t-ora">● HIGH</span>&nbsp;Credential dump detected on WORKSTATION-07</span>
+    <span class="ticker-item"><span class="t-grn">✓ AUTO-REMEDIATED</span>&nbsp;Host isolated: FINANCE-PC-03</span>
+    <span class="ticker-item"><span class="t-blu">🧠 AI</span>&nbsp;False positive suppressed: 128 noisy rules tuned</span>
+  </div>
+</div>
+
+<!-- ══════════════════ HERO ═════════════════════════════════════════════ -->
+<section class="hero" id="hero" aria-labelledby="hero-title">
+  <div class="container">
+    <div class="hero-grid">
+
+      <!-- Left copy -->
+      <div class="hero-copy" style="animation: fadeUp 0.7s ease both">
+        <div class="hero-eyebrow">
+          <span class="badge">🛡 AI-Powered SOC Platform</span>
+        </div>
+        <h1 class="hero-title" id="hero-title">
+          Autonomous AI<br>Cyber Defense<br>Platform
+        </h1>
+        <p class="hero-sub">
+          Detect, investigate, and stop cyber attacks in real time with AI.
+          CyberSentinel AI gives your SOC team superhuman speed and precision —
+          cutting mean time to respond from hours to seconds.
+        </p>
+        <div class="hero-cta">
+          <a href="#trial"     class="btn btn-primary btn-lg">Start Free Trial</a>
+          <a href="/demo.html" class="btn btn-outline btn-lg">Watch Live Demo →</a>
+        </div>
+        <div class="hero-stats">
+          <div>
+            <div class="hero-stat-val">99.3%</div>
+            <div class="hero-stat-lbl">Detection Rate</div>
+          </div>
+          <div>
+            <div class="hero-stat-val">&lt;2s</div>
+            <div class="hero-stat-lbl">Mean Alert Time</div>
+          </div>
+          <div>
+            <div class="hero-stat-val">98%</div>
+            <div class="hero-stat-lbl">False Positive Reduction</div>
+          </div>
+          <div>
+            <div class="hero-stat-val">500+</div>
+            <div class="hero-stat-lbl">Enterprise Customers</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right visual -->
+      <div class="hero-visual" aria-hidden="true" style="animation: fadeIn 1s ease 0.3s both">
+        <div class="hero-screen">
+          <div class="hero-screen-bar">
+            <div class="hero-screen-dot" style="background:#ff5f57"></div>
+            <div class="hero-screen-dot" style="background:#ffbd2e"></div>
+            <div class="hero-screen-dot" style="background:#28ca41"></div>
+            <span style="font-family:var(--font-mono);font-size:11px;color:var(--text-lo);margin-left:8px">
+              app.cybersentinel.ai/dashboard/command-center
+            </span>
+          </div>
+          <div class="hero-screen-inner">
+            <div class="scan-overlay"></div>
+
+            <!-- Simulated command center layout -->
+            <div style="width:100%;height:100%;display:grid;grid-template-columns:1fr 2fr 1fr;gap:1px;background:var(--border)">
+              <!-- Left: alerts -->
+              <div style="background:var(--bg-1);padding:12px;overflow:hidden">
+                <div style="font-family:var(--font-mono);font-size:8px;color:var(--text-lo);margin-bottom:8px;letter-spacing:.1em">⚡ LIVE ALERTS</div>
+                <div class="fake-alert"><div class="fake-dot fa-red"></div><span style="color:#ff5555">CRIT</span><span style="color:var(--text-lo)">BruteForce</span></div>
+                <div class="fake-alert"><div class="fake-dot fa-ora"></div><span style="color:#ff9944">HIGH</span><span style="color:var(--text-lo)">LateralMov</span></div>
+                <div class="fake-alert"><div class="fake-dot fa-red"></div><span style="color:#ff5555">CRIT</span><span style="color:var(--text-lo)">DataExfil</span></div>
+                <div class="fake-alert"><div class="fake-dot fa-yel"></div><span style="color:#ffd54f">MED</span><span style="color:var(--text-lo)">C2Beacon</span></div>
+                <div class="fake-alert"><div class="fake-dot fa-grn"></div><span style="color:#64dd17">LOW</span><span style="color:var(--text-lo)">ScanDetect</span></div>
+                <div class="fake-alert"><div class="fake-dot fa-ora"></div><span style="color:#ff9944">HIGH</span><span style="color:var(--text-lo)">CredDump</span></div>
+                <div class="fake-alert"><div class="fake-dot fa-red"></div><span style="color:#ff5555">CRIT</span><span style="color:var(--text-lo)">RansomDrop</span></div>
+              </div>
+              <!-- Center: globe -->
+              <div style="background:var(--bg-0);position:relative;overflow:hidden">
+                <div class="fake-globe-wrap">
+                  <div class="fake-globe-ring2">
+                    <div class="attack-line" style="transform:rotate(30deg);top:10px;left:50%;animation-delay:.2s"></div>
+                    <div class="attack-line" style="transform:rotate(-60deg);top:10px;left:50%;animation-delay:.8s;background:linear-gradient(to bottom,var(--warn),transparent)"></div>
+                    <div class="attack-line" style="transform:rotate(110deg);top:10px;left:50%;animation-delay:1.4s"></div>
+                    <div style="font-size:32px;z-index:1">🌐</div>
+                  </div>
+                </div>
+                <div style="position:absolute;top:8px;left:8px;font-family:var(--font-mono);font-size:8px;color:var(--text-lo)">
+                  🌐 GLOBAL ATTACK MAP
+                </div>
+                <div style="position:absolute;bottom:8px;right:8px;font-family:var(--font-mono);font-size:8px;color:var(--danger)">
+                  ● 247 ACTIVE ATTACKS
+                </div>
+              </div>
+              <!-- Right: metrics -->
+              <div style="background:var(--bg-1);padding:12px;overflow:hidden">
+                <div style="font-family:var(--font-mono);font-size:8px;color:var(--text-lo);margin-bottom:8px;letter-spacing:.1em">📡 PIPELINE</div>
+                <div class="fake-metric">
+                  <div class="fake-metric-label"><span>Events/s</span><span style="color:var(--accent)">4.2k</span></div>
+                  <div class="fake-metric-bar"><div class="fake-metric-fill" style="width:82%;background:var(--accent)"></div></div>
+                </div>
+                <div class="fake-metric">
+                  <div class="fake-metric-label"><span>Rules Hit</span><span style="color:var(--warn)">312</span></div>
+                  <div class="fake-metric-bar"><div class="fake-metric-fill" style="width:55%;background:var(--warn)"></div></div>
+                </div>
+                <div class="fake-metric">
+                  <div class="fake-metric-label"><span>AI Triage</span><span style="color:var(--accent-3)">98%</span></div>
+                  <div class="fake-metric-bar"><div class="fake-metric-fill" style="width:98%;background:var(--accent-3)"></div></div>
+                </div>
+                <div style="margin-top:12px;font-family:var(--font-mono);font-size:8px;color:var(--text-lo)">🧠 AI ANALYST</div>
+                <div style="margin-top:6px;font-size:9px;color:#a78bfa;font-family:var(--font-mono)">RECOMMEND: Isolate FINANCE-PC-03</div>
+                <div style="margin-top:4px;font-size:9px;color:var(--text-lo);font-family:var(--font-mono)">Conf: 96% · src: llm_guardrailed</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ TRUSTED BY ═══════════════════════════════════════ -->
+<div class="logos-bar">
+  <div class="container">
+    <p>Trusted by security teams at</p>
+    <div class="logos-track">
+      <span class="logo-item">ACME FINANCIAL</span>
+      <span class="logo-item">NEXTGEN HEALTH</span>
+      <span class="logo-item">ORBITAL SYSTEMS</span>
+      <span class="logo-item">VERTEX CAPITAL</span>
+      <span class="logo-item">NOVA LOGISTICS</span>
+      <span class="logo-item">IRONCLAD TECH</span>
+      <span class="logo-item">SENTINEL CORP</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ FEATURES ═════════════════════════════════════════ -->
+<section id="features" aria-labelledby="features-title">
+  <div class="container">
+    <div class="section-eyebrow"><span class="badge violet">Platform Capabilities</span></div>
+    <h2 class="section-title" id="features-title">
+      Everything your SOC needs.<br>Nothing it doesn't.
+    </h2>
+    <p class="section-sub">
+      CyberSentinel AI unifies detection, investigation, and automated response into
+      a single platform — powered by battle-tested AI models.
+    </p>
+    <div class="features-grid">
+
+      <!-- Feature 1 -->
+      <div class="feature-card" style="--card-glow:#a78bfa08">
+        <div class="feature-icon">🧠</div>
+        <h3 class="feature-title">AI SOC Analyst</h3>
+        <p class="feature-desc">
+          An always-on AI analyst that triages every alert, classifies threats with
+          confidence scores, recommends response actions, and generates step-by-step
+          playbooks — instantly.
+        </p>
+        <div class="feature-detail">
+          <span class="feature-pill">Attack classification + confidence ring</span>
+          <span class="feature-pill">LLM-guardrailed decision engine</span>
+          <span class="feature-pill">Auto-generated playbook steps</span>
+          <span class="feature-pill">False positive suppression</span>
+        </div>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="feature-card" style="--card-glow:#38bdf808">
+        <div class="feature-icon">🌐</div>
+        <h3 class="feature-title">Real-Time Attack Map</h3>
+        <p class="feature-desc">
+          3D interactive globe showing live attack origins, targets, and kill-chain
+          vectors in real time. Drill down to any attack vector with a single click.
+        </p>
+        <div class="feature-detail">
+          <span class="feature-pill">Live WebSocket event stream</span>
+          <span class="feature-pill">Global attacker origin mapping</span>
+          <span class="feature-pill">Campaign cluster visualization</span>
+          <span class="feature-pill">Animated attack trajectories</span>
+        </div>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="feature-card" style="--card-glow:#22c55e08">
+        <div class="feature-icon">🔍</div>
+        <h3 class="feature-title">Detection Rule Engine</h3>
+        <p class="feature-desc">
+          Build, test, and deploy detection rules visually. MITRE ATT&amp;CK aligned
+          rule builder with live event simulation, version control, and false positive
+          tuning.
+        </p>
+        <div class="feature-detail">
+          <span class="feature-pill">Visual rule composer</span>
+          <span class="feature-pill">MITRE ATT&amp;CK mapping</span>
+          <span class="feature-pill">Backtesting against historical events</span>
+          <span class="feature-pill">Automated severity scoring</span>
+        </div>
+      </div>
+
+      <!-- Feature 4 -->
+      <div class="feature-card" style="--card-glow:#ff6d0008">
+        <div class="feature-icon">⚡</div>
+        <h3 class="feature-title">Automated Response Playbooks</h3>
+        <p class="feature-desc">
+          Pre-built and custom playbooks that execute autonomously — blocking IPs,
+          isolating hosts, resetting credentials, and notifying stakeholders within
+          milliseconds of detection.
+        </p>
+        <div class="feature-detail">
+          <span class="feature-pill">100+ built-in playbook actions</span>
+          <span class="feature-pill">Drag-and-drop flow builder</span>
+          <span class="feature-pill">API + webhook integrations</span>
+          <span class="feature-pill">Full audit trail</span>
+        </div>
+      </div>
+
+      <!-- Feature 5 -->
+      <div class="feature-card" style="--card-glow:#38bdf808">
+        <div class="feature-icon">🕵️</div>
+        <h3 class="feature-title">Threat Intelligence Platform</h3>
+        <p class="feature-desc">
+          Ingest, normalize, and correlate threat feeds from MISP, VirusTotal,
+          AlienVault OTX, and custom sources. IoC enrichment on every alert,
+          automatically.
+        </p>
+        <div class="feature-detail">
+          <span class="feature-pill">50+ feed sources pre-integrated</span>
+          <span class="feature-pill">IoC lifecycle management</span>
+          <span class="feature-pill">Threat actor profiling</span>
+          <span class="feature-pill">Campaign correlation graph</span>
+        </div>
+      </div>
+
+      <!-- Feature 6 -->
+      <div class="feature-card" style="--card-glow:#a78bfa08">
+        <div class="feature-icon">🛰</div>
+        <h3 class="feature-title">SOC Command Center</h3>
+        <p class="feature-desc">
+          Full-screen war room dashboard combining the attack globe, live alert feed,
+          AI insights, and pipeline metrics — purpose-built for high-stakes SOC
+          operations.
+        </p>
+        <div class="feature-detail">
+          <span class="feature-pill">Real-time multi-panel war room</span>
+          <span class="feature-pill">Executive risk score gauge</span>
+          <span class="feature-pill">Fullscreen &amp; presentation mode</span>
+          <span class="feature-pill">WebSocket event streaming</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ DEMO SCREENSHOTS ═════════════════════════════════ -->
+<section class="demo-section" id="screenshots" aria-labelledby="demo-title">
+  <div class="container">
+    <div class="section-eyebrow"><span class="badge">Platform Screenshots</span></div>
+    <h2 class="section-title" id="demo-title">See it in action</h2>
+    <p class="section-sub">
+      Every panel is live — powered by real-time event streams and AI inference.
+    </p>
+
+    <!-- Tabs -->
+    <div class="demo-tabs" role="tablist">
+      <button class="demo-tab active" role="tab" aria-selected="true"  aria-controls="tab-globe"   id="btn-globe">🌐 Attack Globe</button>
+      <button class="demo-tab"        role="tab" aria-selected="false" aria-controls="tab-warcmd"  id="btn-warcmd">🛡 Command Center</button>
+      <button class="demo-tab"        role="tab" aria-selected="false" aria-controls="tab-graph"   id="btn-graph">🕸 Investigation Graph</button>
+    </div>
+
+    <!-- Globe tab -->
+    <div class="demo-panel active" id="tab-globe" role="tabpanel" aria-labelledby="btn-globe">
+      <div class="demo-screen">
+        <div class="demo-screen-bar">
+          <div class="hero-screen-dot" style="background:#ff5f57;width:10px;height:10px;border-radius:50%"></div>
+          <div class="hero-screen-dot" style="background:#ffbd2e;width:10px;height:10px;border-radius:50%;margin-left:5px"></div>
+          <div class="hero-screen-dot" style="background:#28ca41;width:10px;height:10px;border-radius:50%;margin-left:5px"></div>
+          <span class="demo-screen-url">app.cybersentinel.ai/dashboard/global-attack-map</span>
+        </div>
+        <div class="demo-screen-body" style="height:440px;background:var(--bg-0);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
+          <div style="position:absolute;inset:0;
+            background:repeating-linear-gradient(0deg,transparent,transparent 39px,#38bdf806 40px),
+                        repeating-linear-gradient(90deg,transparent,transparent 39px,#38bdf806 40px),
+                        radial-gradient(circle at 50% 50%,#38bdf80a 0%,transparent 60%)">
+          </div>
+          <div style="position:relative;z-index:1;text-align:center">
+            <div style="width:280px;height:280px;border-radius:50%;border:1px solid #38bdf828;
+              box-shadow:0 0 60px #38bdf812,inset 0 0 60px #38bdf808;
+              margin:0 auto;display:flex;align-items:center;justify-content:center;
+              position:relative;animation:heroSpin 22s linear infinite">
+              <div style="font-size:80px;animation:heroSpin 22s linear infinite reverse">🌎</div>
+              <div style="position:absolute;top:12px;right:24px;width:10px;height:10px;border-radius:50%;
+                background:var(--danger);box-shadow:0 0 12px var(--danger);animation:blink 1s ease-in-out infinite"></div>
+              <div style="position:absolute;bottom:24px;left:16px;width:8px;height:8px;border-radius:50%;
+                background:var(--warn);box-shadow:0 0 8px var(--warn);animation:blink 1.4s ease-in-out infinite"></div>
+              <div style="position:absolute;top:60px;left:-4px;width:7px;height:7px;border-radius:50%;
+                background:#ffd54f;box-shadow:0 0 8px #ffd54f;animation:blink 0.8s ease-in-out infinite"></div>
+            </div>
+            <div style="margin-top:20px;font-family:var(--font-mono);font-size:11px;color:var(--text-lo)">
+              <span style="color:var(--danger)">● 247 CRITICAL</span>&nbsp;&nbsp;
+              <span style="color:var(--warn)">● 1,041 HIGH</span>&nbsp;&nbsp;
+              <span style="color:#ffd54f">● 3,812 MED</span>
+            </div>
+          </div>
+          <div style="position:absolute;top:12px;left:16px;font-family:var(--font-mono);font-size:10px;color:var(--text-lo)">
+            🌐 GLOBAL LIVE CYBER ATTACK MAP
+          </div>
+          <div style="position:absolute;bottom:12px;right:16px;font-family:var(--font-mono);font-size:10px;color:var(--accent)">
+            LIVE ● 4,218 events/sec
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Command Center tab -->
+    <div class="demo-panel" id="tab-warcmd" role="tabpanel" aria-labelledby="btn-warcmd">
+      <div class="demo-screen">
+        <div class="demo-screen-bar">
+          <div class="hero-screen-dot" style="background:#ff5f57;width:10px;height:10px;border-radius:50%"></div>
+          <div class="hero-screen-dot" style="background:#ffbd2e;width:10px;height:10px;border-radius:50%;margin-left:5px"></div>
+          <div class="hero-screen-dot" style="background:#28ca41;width:10px;height:10px;border-radius:50%;margin-left:5px"></div>
+          <span class="demo-screen-url">app.cybersentinel.ai/dashboard/command-center</span>
+        </div>
+        <div class="demo-screen-body" style="height:440px;background:var(--bg-0);display:grid;grid-template-columns:1fr 2fr 1fr;gap:1px;background:var(--border)">
+          <div style="background:var(--bg-1);padding:12px;overflow:hidden">
+            <div style="font-family:var(--font-mono);font-size:9px;color:#ff6d00;margin-bottom:10px;letter-spacing:.08em">⚡ LIVE ALERTS</div>
+            <div class="fake-alert"><div class="fake-dot fa-red"></div><span style="color:#ff5555;font-size:8px">CRIT</span><span style="color:var(--text-lo);font-size:8px;margin-left:2px">BruteForce AD</span></div>
+            <div class="fake-alert"><div class="fake-dot fa-red"></div><span style="color:#ff5555;font-size:8px">CRIT</span><span style="color:var(--text-lo);font-size:8px;margin-left:2px">DataExfil 2.4GB</span></div>
+            <div class="fake-alert"><div class="fake-dot fa-ora"></div><span style="color:#ff9944;font-size:8px">HIGH</span><span style="color:var(--text-lo);font-size:8px;margin-left:2px">LateralMov x7</span></div>
+            <div class="fake-alert"><div class="fake-dot fa-ora"></div><span style="color:#ff9944;font-size:8px">HIGH</span><span style="color:var(--text-lo);font-size:8px;margin-left:2px">CredDump host</span></div>
+            <div class="fake-alert"><div class="fake-dot fa-yel"></div><span style="color:#ffd54f;font-size:8px">MED</span><span style="color:var(--text-lo);font-size:8px;margin-left:2px">C2 Beacon</span></div>
+            <div class="fake-alert"><div class="fake-dot fa-grn"></div><span style="color:#64dd17;font-size:8px">LOW</span><span style="color:var(--text-lo);font-size:8px;margin-left:2px">PortScan</span></div>
+            <div style="margin-top:10px;padding:8px;background:var(--bg-0);border:1px solid #ff174422;border-radius:4px">
+              <div style="font-family:var(--font-mono);font-size:8px;color:var(--danger)">RISK SCORE</div>
+              <div style="font-family:var(--font-mono);font-size:18px;color:var(--danger);font-weight:700">8.4↑</div>
+            </div>
+          </div>
+          <div style="background:var(--bg-0);position:relative;overflow:hidden">
+            <div style="height:100%;background:
+              radial-gradient(circle at 50% 50%,#38bdf80a 0%,transparent 60%),
+              repeating-linear-gradient(0deg,transparent,transparent 23px,#38bdf806 24px),
+              repeating-linear-gradient(90deg,transparent,transparent 23px,#38bdf806 24px);
+              display:flex;align-items:center;justify-content:center">
+              <div style="width:160px;height:160px;border-radius:50%;border:1px solid #38bdf830;
+                box-shadow:0 0 30px #38bdf814;display:flex;align-items:center;justify-content:center;
+                font-size:56px;animation:heroSpin 20s linear infinite">🌐</div>
+            </div>
+            <div style="position:absolute;top:8px;left:10px;font-family:var(--font-mono);font-size:9px;color:var(--text-lo)">🌐 GLOBAL ATTACK MAP</div>
+            <div style="position:absolute;bottom:8px;right:10px;font-family:var(--font-mono);font-size:9px;color:var(--danger)">● 247 ACTIVE</div>
+          </div>
+          <div style="background:var(--bg-1);padding:10px;overflow:hidden">
+            <div style="font-family:var(--font-mono);font-size:9px;color:#22c55e;margin-bottom:8px;letter-spacing:.08em">📡 PIPELINE</div>
+            <div class="fake-metric">
+              <div class="fake-metric-label" style="font-size:8px"><span>EPS</span><span style="color:var(--accent)">4.2k</span></div>
+              <div class="fake-metric-bar"><div class="fake-metric-fill" style="width:82%;background:var(--accent)"></div></div>
+            </div>
+            <div class="fake-metric">
+              <div class="fake-metric-label" style="font-size:8px"><span>Queue</span><span style="color:#22c55e">OK</span></div>
+              <div class="fake-metric-bar"><div class="fake-metric-fill" style="width:24%;background:#22c55e"></div></div>
+            </div>
+            <div class="fake-metric">
+              <div class="fake-metric-label" style="font-size:8px"><span>DLQ</span><span style="color:#ffd54f">3</span></div>
+              <div class="fake-metric-bar"><div class="fake-metric-fill" style="width:8%;background:#ffd54f"></div></div>
+            </div>
+            <div style="margin-top:8px;font-family:var(--font-mono);font-size:8px;color:#a78bfa">🧠 AI ANALYST</div>
+            <div style="margin-top:5px;font-family:var(--font-mono);font-size:8px;color:var(--text-lo);line-height:1.5">
+              Conf 96%<br>Isolate host<br>LLM-guardrailed
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Investigation Graph tab -->
+    <div class="demo-panel" id="tab-graph" role="tabpanel" aria-labelledby="btn-graph">
+      <div class="demo-screen">
+        <div class="demo-screen-bar">
+          <div class="hero-screen-dot" style="background:#ff5f57;width:10px;height:10px;border-radius:50%"></div>
+          <div class="hero-screen-dot" style="background:#ffbd2e;width:10px;height:10px;border-radius:50%;margin-left:5px"></div>
+          <div class="hero-screen-dot" style="background:#28ca41;width:10px;height:10px;border-radius:50%;margin-left:5px"></div>
+          <span class="demo-screen-url">app.cybersentinel.ai/investigation/graph</span>
+        </div>
+        <div style="height:440px;background:var(--bg-0);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center">
+          <div style="position:absolute;inset:0;
+            background:repeating-linear-gradient(0deg,transparent,transparent 39px,#a78bfa06 40px),
+                        repeating-linear-gradient(90deg,transparent,transparent 39px,#a78bfa06 40px)">
+          </div>
+          <!-- Fake graph nodes + edges -->
+          <svg width="700" height="380" viewBox="0 0 700 380" style="position:absolute;inset:0;overflow:visible">
+            <!-- Edges -->
+            <line x1="350" y1="190" x2="200" y2="100" stroke="#38bdf822" stroke-width="1.5"/>
+            <line x1="350" y1="190" x2="480" y2="100" stroke="#38bdf822" stroke-width="1.5"/>
+            <line x1="350" y1="190" x2="160" y2="260" stroke="#ff174422" stroke-width="2"/>
+            <line x1="350" y1="190" x2="520" y2="280" stroke="#a78bfa22" stroke-width="1.5"/>
+            <line x1="350" y1="190" x2="350" y2="320" stroke="#ff6d0022" stroke-width="1.5"/>
+            <line x1="200" y1="100" x2="100" y2="60"  stroke="#38bdf818" stroke-width="1.5"/>
+            <line x1="480" y1="100" x2="580" y2="60"  stroke="#38bdf818" stroke-width="1.5"/>
+            <!-- Nodes -->
+            <circle cx="350" cy="190" r="22" fill="#0a1020" stroke="#ff1744" stroke-width="2"/>
+            <text x="350" y="195" text-anchor="middle" font-size="10" fill="#ff1744" font-family="monospace">HOST</text>
+            <circle cx="200" cy="100" r="16" fill="#0a1020" stroke="#38bdf8" stroke-width="1.5"/>
+            <text x="200" y="104" text-anchor="middle" font-size="9" fill="#38bdf8" font-family="monospace">IP</text>
+            <circle cx="480" cy="100" r="16" fill="#0a1020" stroke="#a78bfa" stroke-width="1.5"/>
+            <text x="480" y="104" text-anchor="middle" font-size="9" fill="#a78bfa" font-family="monospace">USER</text>
+            <circle cx="160" cy="260" r="14" fill="#0a1020" stroke="#ff1744" stroke-width="1.5"/>
+            <text x="160" y="264" text-anchor="middle" font-size="8" fill="#ff1744" font-family="monospace">IOC</text>
+            <circle cx="520" cy="280" r="14" fill="#0a1020" stroke="#22c55e" stroke-width="1.5"/>
+            <text x="520" y="284" text-anchor="middle" font-size="8" fill="#22c55e" font-family="monospace">FILE</text>
+            <circle cx="350" cy="320" r="14" fill="#0a1020" stroke="#ff6d00" stroke-width="1.5"/>
+            <text x="350" y="324" text-anchor="middle" font-size="8" fill="#ff6d00" font-family="monospace">PROC</text>
+            <circle cx="100" cy="60"  r="12" fill="#0a1020" stroke="#38bdf8" stroke-width="1"/>
+            <text x="100" y="64"  text-anchor="middle" font-size="8" fill="#38bdf8" font-family="monospace">NET</text>
+            <circle cx="580" cy="60"  r="12" fill="#0a1020" stroke="#a78bfa" stroke-width="1"/>
+            <text x="580" y="64"  text-anchor="middle" font-size="8" fill="#a78bfa" font-family="monospace">AUTH</text>
+          </svg>
+          <div style="position:absolute;top:12px;left:16px;font-family:var(--font-mono);font-size:10px;color:var(--text-lo)">
+            🕸 INVESTIGATION GRAPH — Case #INC-2024-0847
+          </div>
+          <div style="position:absolute;bottom:12px;left:16px;display:flex;gap:16px">
+            <span style="font-family:var(--font-mono);font-size:9px;color:var(--danger)">● Compromised host</span>
+            <span style="font-family:var(--font-mono);font-size:9px;color:#38bdf8">● External IP</span>
+            <span style="font-family:var(--font-mono);font-size:9px;color:#a78bfa">● User entity</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:36px">
+      <a href="/demo.html" class="btn btn-primary">Explore Full Interactive Demo →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ HOW IT WORKS ═════════════════════════════════════ -->
+<section id="how-it-works" aria-labelledby="how-title">
+  <div class="container">
+    <div class="section-eyebrow"><span class="badge green">How It Works</span></div>
+    <h2 class="section-title" id="how-title">From event to resolution — in seconds</h2>
+    <p class="section-sub">
+      CyberSentinel AI processes millions of events per second through a battle-tested
+      pipeline that turns raw telemetry into resolved incidents automatically.
+    </p>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative">
+      <!-- Connector line -->
+      <div style="position:absolute;top:36px;left:12.5%;right:12.5%;height:2px;
+        background:linear-gradient(90deg,var(--accent),var(--accent-2),var(--accent-3));
+        opacity:.3;z-index:0"></div>
+
+      <!-- Step 1 -->
+      <div style="text-align:center;padding:0 16px;position:relative;z-index:1">
+        <div style="width:72px;height:72px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent);
+          display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 16px">📡</div>
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent);margin-bottom:8px;letter-spacing:.08em">01 — INGEST</div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:8px">Collect</div>
+        <div style="font-size:13px;color:var(--text-mid);line-height:1.6">Telemetry streams from endpoints, network, cloud, and identity sources.</div>
+      </div>
+
+      <!-- Step 2 -->
+      <div style="text-align:center;padding:0 16px;position:relative;z-index:1">
+        <div style="width:72px;height:72px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent-2);
+          display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 16px">🔍</div>
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent-2);margin-bottom:8px;letter-spacing:.08em">02 — DETECT</div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:8px">Detect</div>
+        <div style="font-size:13px;color:var(--text-mid);line-height:1.6">Detection rules and ML models evaluate every event in real time.</div>
+      </div>
+
+      <!-- Step 3 -->
+      <div style="text-align:center;padding:0 16px;position:relative;z-index:1">
+        <div style="width:72px;height:72px;border-radius:50%;background:var(--bg-2);border:2px solid #ffd54f;
+          display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 16px">🧠</div>
+        <div style="font-family:var(--font-mono);font-size:10px;color:#ffd54f;margin-bottom:8px;letter-spacing:.08em">03 — ANALYZE</div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:8px">Investigate</div>
+        <div style="font-size:13px;color:var(--text-mid);line-height:1.6">AI SOC Analyst correlates alerts, builds investigation graph, classifies threat.</div>
+      </div>
+
+      <!-- Step 4 -->
+      <div style="text-align:center;padding:0 16px;position:relative;z-index:1">
+        <div style="width:72px;height:72px;border-radius:50%;background:var(--bg-2);border:2px solid var(--accent-3);
+          display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 16px">⚡</div>
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent-3);margin-bottom:8px;letter-spacing:.08em">04 — RESPOND</div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:8px">Respond</div>
+        <div style="font-size:13px;color:var(--text-mid);line-height:1.6">Automated playbooks execute containment, remediation, and stakeholder notifications.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ TESTIMONIALS ═════════════════════════════════════ -->
+<section id="testimonials" style="background:var(--bg-1);border-top:1px solid var(--border);border-bottom:1px solid var(--border)" aria-labelledby="testi-title">
+  <div class="container">
+    <div class="section-eyebrow"><span class="badge violet">Customer Stories</span></div>
+    <h2 class="section-title" id="testi-title">Trusted by security pros worldwide</h2>
+    <p class="section-sub">Real results from real teams defending real infrastructure.</p>
+    <div class="testimonials-grid">
+
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">
+          "CyberSentinel AI cut our mean time to respond from 4 hours to under 90 seconds.
+          The AI analyst triage alone saved us 3 FTE worth of analyst time in Q1."
+        </p>
+        <div class="testi-author">
+          <div class="testi-avatar">👨‍💼</div>
+          <div>
+            <div class="testi-name">David R.</div>
+            <div class="testi-role">CISO, Tier-1 Financial Institution</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">
+          "The investigation graph feature is a game changer. What used to take our
+          analysts 2 hours to map manually now builds itself in 8 seconds with full
+          entity correlation."
+        </p>
+        <div class="testi-author">
+          <div class="testi-avatar">👩‍💻</div>
+          <div>
+            <div class="testi-name">Priya K.</div>
+            <div class="testi-role">Head of SOC, Global Healthcare Provider</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">
+          "We deployed the detection rule engine and immediately caught 3 persistent
+          threats that had been in our network for months. The MITRE ATT&amp;CK
+          alignment made our audit readiness trivial."
+        </p>
+        <div class="testi-author">
+          <div class="testi-avatar">🧑‍🔬</div>
+          <div>
+            <div class="testi-name">Marcus T.</div>
+            <div class="testi-role">VP Security Engineering, SaaS Unicorn</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ CTA BAND ══════════════════════════════════════════ -->
+<section class="cta-band" id="trial" aria-labelledby="cta-title">
+  <div class="container">
+    <span class="badge" style="margin-bottom:20px;display:inline-flex">🚀 Free 14-Day Trial — No Credit Card Required</span>
+    <h2 class="cta-title" id="cta-title">Ready to defend at AI speed?</h2>
+    <p class="cta-sub">
+      Join 500+ enterprise security teams using CyberSentinel AI to detect and
+      neutralize threats before they cause damage.
+    </p>
+    <div class="cta-actions">
+      <a href="/contact.html" class="btn btn-primary btn-lg">Start Free Trial</a>
+      <a href="/pricing.html" class="btn btn-outline btn-lg">View Pricing</a>
+    </div>
+    <p style="font-size:13px;color:var(--text-lo);margin-top:20px">
+      SOC2 Type II certified &nbsp;·&nbsp; GDPR compliant &nbsp;·&nbsp; 99.99% uptime SLA
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════ FOOTER ════════════════════════════════════════════ -->
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <!-- Brand -->
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-weight:700;font-size:16px;color:var(--text-hi)">
+          <span style="font-size:20px">🛡</span>
+          Cyber<span style="color:var(--accent)">Sentinel</span>&nbsp;AI
+        </div>
+        <p class="footer-brand-desc">
+          Autonomous AI Cyber Defense Platform. Detect, investigate, and stop cyber
+          attacks in real time. Trusted by 500+ enterprise security teams.
+        </p>
+        <div style="display:flex;gap:12px;margin-top:20px">
+          <a href="#" aria-label="Twitter" style="color:var(--text-lo);font-size:18px;transition:color var(--transition)" onmouseover="this.style.color='#38bdf8'" onmouseout="this.style.color='#475569'">𝕏</a>
+          <a href="#" aria-label="LinkedIn" style="color:var(--text-lo);font-size:18px;transition:color var(--transition)" onmouseover="this.style.color='#38bdf8'" onmouseout="this.style.color='#475569'">in</a>
+          <a href="#" aria-label="GitHub" style="color:var(--text-lo);font-size:18px;transition:color var(--transition)" onmouseover="this.style.color='#38bdf8'" onmouseout="this.style.color='#475569'">⬛</a>
+        </div>
+      </div>
+
+      <!-- Product -->
+      <div>
+        <div class="footer-heading">Product</div>
+        <nav class="footer-links">
+          <a href="#features">AI SOC Analyst</a>
+          <a href="#features">Attack Globe</a>
+          <a href="#features">Detection Rules</a>
+          <a href="#features">Playbooks</a>
+          <a href="#features">Threat Intel</a>
+          <a href="#features">Command Center</a>
+        </nav>
+      </div>
+
+      <!-- Company -->
+      <div>
+        <div class="footer-heading">Company</div>
+        <nav class="footer-links">
+          <a href="#">About</a>
+          <a href="#">Blog</a>
+          <a href="#">Careers</a>
+          <a href="#">Press</a>
+          <a href="/contact.html">Contact</a>
+        </nav>
+      </div>
+
+      <!-- Legal / Support -->
+      <div>
+        <div class="footer-heading">Resources</div>
+        <nav class="footer-links">
+          <a href="#">Documentation</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#">Status</a>
+          <a href="#">Security</a>
+          <a href="#">API Reference</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 CyberSentinel AI. All rights reserved.</span>
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Cookie Policy</a>
+        <a href="#">SOC 2</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ══════════════════ SCRIPTS ═══════════════════════════════════════════ -->
+<script src="assets/main.js"></script>
+</body>
+</html>

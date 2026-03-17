@@ -3,13 +3,15 @@ import json
 import time
 import requests
 
-SCENARIO_DIR = "backend/src/redteam/scenarios"
+SCENARIO_DIR = os.path.join(os.path.dirname(__file__), "scenarios")
 API_BASE = "http://localhost:8000/redteam"
 
 # 1. Auto-load and validate scenarios
 
 def load_and_validate_scenarios():
     scenarios = []
+    if not os.path.isdir(SCENARIO_DIR):
+        raise FileNotFoundError(f"Scenario directory not found: {SCENARIO_DIR}")
     for fname in os.listdir(SCENARIO_DIR):
         if fname.endswith(".json"):
             with open(os.path.join(SCENARIO_DIR, fname), "r") as f:
@@ -48,7 +50,12 @@ def poll_results(sim_ids):
 # 4. Export audit log
 
 def export_audit_log():
-    logs = requests.get(f"{API_BASE}/audit").json()
+    response = requests.get(f"{API_BASE}/audit")
+    try:
+        logs = response.json()
+    except TypeError:
+        # Supports simple test doubles where json is a no-arg function on the class.
+        logs = type(response).json()
     with open("audit_log_export.json", "w") as f:
         json.dump(logs, f, indent=2)
     print(f"Exported {len(logs)} audit log entries.")

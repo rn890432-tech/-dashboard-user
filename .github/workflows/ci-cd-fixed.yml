@@ -1,0 +1,187 @@
+name: CI/CD - Jest, Cypress, Deploy (Staging & Production)
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+  pull_request:
+
+jobs:
+  jest-tests:
+    name: Jest Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm install
+      - name: Run Jest
+        run: npm test -- --ci
+
+  cypress-tests:
+    name: Cypress Tests (${{ matrix.os }} / Node ${{ matrix.node }} / ${{ matrix.browser }})
+    needs: jest-tests
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [16, 18, 20]
+        browser: [chrome, firefox, edge]
+    runs-on: ${{ matrix.os }}
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test_db
+        ports:
+          - 3306:3306
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            cypress-${{ runner.os }}-
+      - run: npm install
+      - run: npm run db:reset
+      - uses: cypress-io/github-action@v6
+        with:
+          start: npm start
+          wait-on: http://localhost:3000
+          browser: ${{ matrix.browser }}
+          record: true
+          key: ${{ secrets.CYPRESS_RECORD_KEY }}
+          parallel: true
+      - name: Upload Cypress Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-artifacts-${{ matrix.os }}-node-${{ matrix.node }}-${{ matrix.browser }}
+          path: |
+            cypress/screenshots
+            cypress/videos
+            cypress/logs
+
+  deploy-staging:
+    name: Deploy Staging
+    needs: [jest-tests, cypress-tests]
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - name: Deploy to Staging
+        id: deploy
+        run: vercel --prod --token ${{ secrets.VERCEL_TOKEN }} --env STAGING
+      - name: Notify Slack - Staging Live
+        uses: slackapi/slack-github-action@v1.24.0
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          payload: |
+            {
+              "text": "🚀 Staging deployment complete! ${{ steps.deploy.outputs.url }}"
+            }
+
+  deploy-production:
+    name: Deploy Production
+    needs: [deploy-staging]
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record start time
+        id: start
+        run: echo "start_time=$(date +%s)" >> $GITHUB_OUTPUT
+      - name: Deploy to Production
+        id: deploy
+        run: vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
+      - name: Record end time
+        id: end
+        run: echo "end_time=$(date +%s)" >> $GITHUB_OUTPUT
+      - name: Calculate duration
+        id: duration
+        run: |
+          duration=$(( $(date +%s) - ${{ steps.start.outputs.start_time }} ))
+          echo "deploy_duration=$duration" >> $GITHUB_OUTPUT
+      - name: Send metrics to Datadog
+        run: |
+          curl -X POST "https://api.datadoghq.com/api/v1/series" \
+          -H "Content-Type: application/json" \
+          -H "DD-API-KEY: ${{ secrets.DD_API_KEY }}" \
+          -d '{
+            "series": [{
+              "metric": "ci.deploy.duration",
+              "points": [[$(date +%s), ${{ steps.duration.outputs.deploy_duration }}]],
+              "tags": ["env:production", "commit:${{ github.sha }}"]
+            }]
+          }'
+
+  rolling-average:
+    name: Calculate Rolling Average
+    needs: deploy-production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Calculate average deploy duration
+        id: avg
+        run: |
+          # Simplified rolling avg - in production use persistent storage
+          echo "rolling_avg=120" >> $GITHUB_OUTPUT
+
+  check-thresholds:
+    name: Check Performance Thresholds
+    needs: [deploy-production, rolling-average]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check thresholds
+        id: check
+        run: |
+          duration=${{ needs.deploy-production.outputs.deploy_duration }}
+          avg=${{ needs.rolling-average.outputs.rolling_avg }}
+          alert="false"
+          if [ $duration -gt 120 ]; then alert="true"; fi
+          if (( $(echo "$avg > 90" | bc -l) )); then alert="true"; fi
+          echo "alert=$alert" >> $GITHUB_OUTPUT
+
+  notify-slow:
+    needs: check-thresholds
+    if: needs.check-thresholds.outputs.alert == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Slack on slow deploy
+        uses: slackapi/slack-github-action@v1.24.0
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          payload: |
+            {
+              "text": "⚠️ Slow deploy detected! Duration: ${{ needs.deploy-production.outputs.deploy_duration }}s (avg: ${{ needs.rolling-average.outputs.rolling_avg }}s)"
+            }
+
+  notify-success:
+    needs: [deploy-production, rolling-average]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Production Success
+        uses: slackapi/slack-github-action@v1.24.0
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          payload: |
+            {
+              "text": "🚀 Production deploy completed in ${{ needs.deploy-production.outputs.deploy_duration }}s"

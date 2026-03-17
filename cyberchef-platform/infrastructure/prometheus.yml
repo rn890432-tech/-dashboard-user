@@ -1,0 +1,6 @@
+global:
+  scrape_interval: 15s
+scrape_configs:
+  - job_name: 'cyberchef-services'
+    static_configs:
+      - targets: ['api:4000', 'auth:4001', 'ai:4002', 'video:4003', 'grocery:4004', 'marketplace:4005']

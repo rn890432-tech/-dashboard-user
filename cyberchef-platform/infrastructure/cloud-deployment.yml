@@ -1,0 +1,74 @@
+version: '3.8'
+services:
+  mongodb:
+    image: mongo:6
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=securepassword
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    restart: always
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: always
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/ssl
+    depends_on:
+      - auth-service
+      - recipe-service
+      - ai-service
+      - feed-service
+      - billing-service
+      - analytics-service
+      - video-service
+    restart: always
+  auth-service:
+    build: ../services/auth-service
+    env_file:
+      - ../.env.production
+    restart: always
+  recipe-service:
+    build: ../services/recipe-service
+    env_file:
+      - ../.env.production
+    restart: always
+  ai-service:
+    build: ../services/ai-service
+    env_file:
+      - ../.env.production
+    restart: always
+  feed-service:
+    build: ../services/feed-service
+    env_file:
+      - ../.env.production
+    restart: always
+  billing-service:
+    build: ../services/billing-service
+    env_file:
+      - ../.env.production
+    restart: always
+  analytics-service:
+    build: ../services/analytics-service
+    env_file:
+      - ../.env.production
+    restart: always
+  video-service:
+    build: ../services/video-service
+    env_file:
+      - ../.env.production
+    restart: always
+volumes:
+  mongo-data:
+  redis-data:

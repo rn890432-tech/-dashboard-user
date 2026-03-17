@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO -->
+  <title>Live Demo — CyberSentinel AI</title>
+  <meta name="description" content="See CyberSentinel AI in action. Explore the live attack globe, command center, investigation graph, and AI SOC analyst — no login required." />
+  <link rel="canonical" href="https://cybersentinel.ai/demo" />
+  <meta property="og:title"       content="Live Demo — CyberSentinel AI" />
+  <meta property="og:description" content="Explore the full SOC platform live — attack map, command center, AI analyst, and more." />
+  <meta property="og:url"         content="https://cybersentinel.ai/demo" />
+  <meta property="og:image"       content="https://cybersentinel.ai/assets/og-image.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="icon" href="assets/favicon.ico" type="image/x-icon" />
+
+  <style>
+    .demo-feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin: 48px 0;
+    }
+    .demo-cap-card {
+      background: var(--bg-1);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px 20px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      transition: border-color var(--transition);
+    }
+    .demo-cap-card:hover { border-color: var(--border-hi); }
+    .demo-cap-icon {
+      font-size: 22px;
+      line-height: 1;
+      margin-top: 2px;
+    }
+    .demo-cap-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .demo-cap-desc  { font-size: 12px; color: var(--text-lo); line-height: 1.6; }
+    .demo-nav-pills {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .demo-pill {
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      color: var(--text-mid);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .demo-pill:hover { border-color: var(--border-hi); color: var(--text-hi); }
+    .demo-pill.active {
+      background: #38bdf811;
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .demo-view { display: none; }
+    .demo-view.active { display: block; animation: fadeIn 0.3s ease; }
+    /* Animated globe in demo */
+    .globe-demo-wrap {
+      height: 580px;
+      background: var(--bg-0);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .globe-demo-wrap::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(0deg,transparent,transparent 39px,#38bdf806 40px),
+        repeating-linear-gradient(90deg,transparent,transparent 39px,#38bdf806 40px),
+        radial-gradient(circle at 50% 50%,#38bdf809 0%,transparent 55%);
+    }
+    .globe-sphere {
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      border: 1px solid #38bdf828;
+      box-shadow: 0 0 80px #38bdf818, inset 0 0 60px #38bdf808;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: heroSpin 24s linear infinite;
+    }
+    .globe-sphere .emoji { font-size: 110px; animation: heroSpin 24s linear infinite reverse; }
+    .attack-node {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      animation: blink 1.2s ease-in-out infinite;
+    }
+    .attack-node.red {
+      background: var(--danger);
+      box-shadow: 0 0 12px var(--danger);
+    }
+    .attack-node.orange {
+      background: var(--warn);
+      box-shadow: 0 0 12px var(--warn);
+    }
+    .attack-node.yellow {
+      background: #ffd54f;
+      box-shadow: 0 0 10px #ffd54f;
+    }
+    .demo-sidebar {
+      position: absolute;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(5,11,24,0.85);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      width: 200px;
+      backdrop-filter: blur(8px);
+      z-index: 2;
+    }
+    .demo-sidebar-title {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-lo);
+      letter-spacing: .1em;
+      margin-bottom: 10px;
+    }
+    .demo-sidebar-row {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 5px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    /* AI panel simulation */
+    .ai-panel-wrap {
+      height: 580px;
+      background: var(--bg-0);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+    }
+    .ai-panel-block {
+      background: var(--bg-1);
+      padding: 20px;
+      overflow: hidden;
+    }
+    .ai-block-title {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-lo);
+      letter-spacing: .1em;
+      margin-bottom: 14px;
+    }
+    .ai-chat-msg {
+      margin-bottom: 12px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .ai-chat-msg.analyst {
+      background: #38bdf808;
+      border: 1px solid #38bdf818;
+      border-radius: 6px;
+      padding: 10px 12px;
+      color: var(--text-mid);
+    }
+    .ai-chat-msg.system {
+      background: #a78bfa08;
+      border: 1px solid #a78bfa18;
+      border-radius: 6px;
+      padding: 10px 12px;
+      color: #a78bfa;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+    .ai-chat-msg.user {
+      text-align: right;
+      color: var(--text-lo);
+      font-size: 12px;
+    }
+    .typing-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 14px;
+      background: var(--accent);
+      animation: blink 0.9s step-end infinite;
+      vertical-align: middle;
+    }
+    /* Stats ticker at top of demo page */
+    .demo-live-stats {
+      display: flex;
+      gap: 0;
+      justify-content: center;
+      background: var(--bg-1);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .demo-stat-block {
+      flex: 1;
+      padding: 18px 24px;
+      text-align: center;
+      border-right: 1px solid var(--border);
+    }
+    .demo-stat-block:last-child { border-right: none; }
+    .demo-stat-val {
+      font-family: var(--font-mono);
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .demo-stat-lbl {
+      font-size: 11px;
+      color: var(--text-lo);
+      margin-top: 4px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <a href="/" class="nav-logo" aria-label="CyberSentinel AI home">
+    <span class="shield" aria-hidden="true">🛡</span>
+    Cyber<span>Sentinel</span>&nbsp;AI
+  </a>
+  <div class="nav-links">
+    <a href="/">Product</a>
+    <a href="/pricing.html">Pricing</a>
+    <a href="/demo.html" class="active">Demo</a>
+    <a href="/contact.html">Contact</a>
+    <a href="#">Docs</a>
+  </div>
+  <div class="nav-cta">
+    <a href="/contact.html" class="btn btn-primary btn-sm">Start Free Trial</a>
+  </div>
+  <button class="nav-hamburger" aria-label="Open menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- PAGE HERO -->
+<section class="demo-page-hero" aria-labelledby="demo-page-title">
+  <div class="container">
+    <div class="section-eyebrow"><span class="badge"><span class="demo-live-dot"></span>Interactive Demo</span></div>
+    <h1 class="section-title" id="demo-page-title" style="margin-bottom:16px">
+      The full SOC platform — live
+    </h1>
+    <p class="section-sub">
+      No signup needed. Explore every feature with live simulated data.
+      What you see is exactly what your analysts will use on day one.
+    </p>
+  </div>
+</section>
+
+<!-- LIVE STATS BAR -->
+<div class="demo-live-stats" role="status" aria-label="Live platform metrics">
+  <div class="demo-stat-block">
+    <div class="demo-stat-val" style="color:var(--accent)"><span id="eps">4,218</span></div>
+    <div class="demo-stat-lbl">Events / sec</div>
+  </div>
+  <div class="demo-stat-block">
+    <div class="demo-stat-val" style="color:var(--danger)"><span id="crit">247</span></div>
+    <div class="demo-stat-lbl">Critical alerts</div>
+  </div>
+  <div class="demo-stat-block">
+    <div class="demo-stat-val" style="color:var(--accent-3)">98.2%</div>
+    <div class="demo-stat-lbl">AI triage accuracy</div>
+  </div>
+  <div class="demo-stat-block">
+    <div class="demo-stat-val" style="color:#ffd54f">1.8s</div>
+    <div class="demo-stat-lbl">Avg. response time</div>
+  </div>
+  <div class="demo-stat-block">
+    <div class="demo-stat-val" style="color:var(--accent-2)">500+</div>
+    <div class="demo-stat-lbl">Enterprises protected</div>
+  </div>
+</div>
+
+<!-- DEMO CONTENT -->
+<section style="padding:64px 0" aria-labelledby="demo-explore-title">
+  <div class="container">
+    <h2 class="section-title" id="demo-explore-title" style="margin-bottom:8px">Explore the platform</h2>
+    <p style="text-align:center;font-size:15px;color:var(--text-mid);margin-bottom:40px">
+      Navigate between modules using the icons below
+    </p>
+
+    <!-- NAV PILLS -->
+    <div class="demo-nav-pills" role="tablist" aria-label="Demo modules">
+      <button class="demo-pill active" data-target="view-globe"   role="tab" aria-selected="true"  aria-controls="view-globe">🌐 Attack Globe</button>
+      <button class="demo-pill"        data-target="view-ai"      role="tab" aria-selected="false" aria-controls="view-ai">🧠 AI SOC Analyst</button>
+      <button class="demo-pill"        data-target="view-rules"   role="tab" aria-selected="false" aria-controls="view-rules">🔍 Detection Rules</button>
+      <button class="demo-pill"        data-target="view-metrics" role="tab" aria-selected="false" aria-controls="view-metrics">📡 Pipeline Metrics</button>
+    </div>
+
+    <!-- VIEW: Attack Globe -->
+    <div class="demo-view active" id="view-globe" role="tabpanel" aria-labelledby="btn-globe">
+      <div class="demo-embed-container">
+        <div class="demo-embed-bar">
+          <span><span class="demo-live-dot"></span> LIVE — Global Cyber Attack Map</span>
+          <span>4,218 events/sec · 247 critical · WebSocket connected</span>
+        </div>
+        <div class="globe-demo-wrap" aria-label="Animated 3D attack globe">
+          <div class="globe-sphere">
+            <span class="emoji">🌍</span>
+            <!-- Animated attack dots -->
+            <div class="attack-node red"    style="top:18px;left:60px;animation-delay:.1s"></div>
+            <div class="attack-node orange" style="top:80px;right:30px;animation-delay:.7s"></div>
+            <div class="attack-node yellow" style="bottom:30px;left:50px;animation-delay:1.2s"></div>
+            <div class="attack-node red"    style="bottom:60px;right:60px;animation-delay:.4s"></div>
+            <div class="attack-node orange" style="top:130px;left:20px;animation-delay:1.8s"></div>
+          </div>
+          <!-- Sidebar panel -->
+          <div class="demo-sidebar" aria-label="Attack statistics panel">
+            <div class="demo-sidebar-title">⚡ ATTACK STATS</div>
+            <div class="demo-sidebar-row"><span style="color:var(--text-lo)">Total today</span><span style="color:var(--text-hi)" id="totalToday">127,440</span></div>
+            <div class="demo-sidebar-row"><span style="color:var(--danger)">Critical</span><span style="color:var(--danger)" id="critCount">247</span></div>
+            <div class="demo-sidebar-row"><span style="color:var(--warn)">High</span><span style="color:var(--warn)">1,041</span></div>
+            <div class="demo-sidebar-row"><span style="color:#ffd54f">Medium</span><span style="color:#ffd54f">3,812</span></div>
+            <div class="demo-sidebar-row"><span style="color:var(--accent-3)">Blocked</span><span style="color:var(--accent-3)">98.3%</span></div>
+            <div style="margin-top:12px;font-family:var(--font-mono);font-size:9px;color:var(--text-lo)">TOP SOURCES</div>
+            <div class="demo-sidebar-row"><span style="color:var(--text-lo)">CN</span><span style="color:var(--text-mid)">34%</span></div>
+            <div class="demo-sidebar-row"><span style="color:var(--text-lo)">RU</span><span style="color:var(--text-mid)">28%</span></div>
+            <div class="demo-sidebar-row"><span style="color:var(--text-lo)">KP</span><span style="color:var(--text-mid)">11%</span></div>
+            <div class="demo-sidebar-row"><span style="color:var(--text-lo)">BR</span><span style="color:var(--text-mid)">8%</span></div>
+            <div class="demo-sidebar-row"><span style="color:var(--text-lo)">Other</span><span style="color:var(--text-mid)">19%</span></div>
+          </div>
+          <!-- Bottom status bar -->
+          <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);
+            display:flex;gap:24px;font-family:var(--font-mono);font-size:10px;z-index:2">
+            <span style="color:var(--danger)">● 247 CRITICAL</span>
+            <span style="color:var(--warn)">● 1,041 HIGH</span>
+            <span style="color:#ffd54f">● 3,812 MED</span>
+            <span style="color:var(--accent)">● LIVE</span>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center">
+        <a href="/contact.html" class="btn btn-primary">Start Free Trial to Access Full Globe →</a>
+      </div>
+    </div>
+
+    <!-- VIEW: AI SOC Analyst -->
+    <div class="demo-view" id="view-ai" role="tabpanel" aria-labelledby="btn-ai">
+      <div class="demo-embed-container">
+        <div class="demo-embed-bar">
+          <span>🧠 AI SOC Analyst — Case INC-2024-0847</span>
+          <span style="color:var(--accent-3)"><span class="demo-live-dot"></span>Processing</span>
+        </div>
+        <div class="ai-panel-wrap">
+          <!-- Alert summary -->
+          <div class="ai-panel-block">
+            <div class="ai-block-title">⚠ INCIDENT CONTEXT</div>
+            <div style="background:var(--bg-2);border:1px solid #ff174422;border-radius:6px;padding:12px;margin-bottom:14px">
+              <div style="font-family:var(--font-mono);font-size:9px;color:var(--danger);margin-bottom:6px">CRITICAL — INC-2024-0847</div>
+              <div style="font-size:13px;color:var(--text-hi);font-weight:600;margin-bottom:4px">Active Ransomware Deployment</div>
+              <div style="font-size:12px;color:var(--text-mid)">Host: FINANCE-PC-03 · User: j.smith · Severity: 9.4</div>
+            </div>
+            <div class="ai-block-title" style="margin-top:16px">🔗 ENTITY GRAPH</div>
+            <svg width="100%" height="140" viewBox="0 0 340 140">
+              <line x1="170" y1="70" x2="80"  y2="30"  stroke="#38bdf820" stroke-width="1.5"/>
+              <line x1="170" y1="70" x2="260" y2="30"  stroke="#38bdf820" stroke-width="1.5"/>
+              <line x1="170" y1="70" x2="60"  y2="110" stroke="#ff174420" stroke-width="2"/>
+              <line x1="170" y1="70" x2="280" y2="110" stroke="#a78bfa20" stroke-width="1.5"/>
+              <circle cx="170" cy="70"  r="18" fill="#0a1020" stroke="#ff1744" stroke-width="2"/>
+              <text x="170" y="74" text-anchor="middle" font-size="8" fill="#ff1744" font-family="monospace">HOST</text>
+              <circle cx="80"  cy="30"  r="12" fill="#0a1020" stroke="#38bdf8" stroke-width="1.5"/>
+              <text x="80"  y="34"  text-anchor="middle" font-size="7" fill="#38bdf8" font-family="monospace">IP</text>
+              <circle cx="260" cy="30"  r="12" fill="#0a1020" stroke="#a78bfa" stroke-width="1.5"/>
+              <text x="260" y="34"  text-anchor="middle" font-size="7" fill="#a78bfa" font-family="monospace">USER</text>
+              <circle cx="60"  cy="110" r="10" fill="#0a1020" stroke="#ff1744" stroke-width="1.5"/>
+              <text x="60"  y="114" text-anchor="middle" font-size="7" fill="#ff1744" font-family="monospace">IOC</text>
+              <circle cx="280" cy="110" r="10" fill="#0a1020" stroke="#22c55e" stroke-width="1.5"/>
+              <text x="280" y="114" text-anchor="middle" font-size="7" fill="#22c55e" font-family="monospace">FILE</text>
+            </svg>
+            <div class="ai-block-title" style="margin-top:12px">📊 CONFIDENCE SCORE</div>
+            <div style="display:flex;align-items:center;gap:12px">
+              <div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+                <div style="width:96%;height:100%;background:linear-gradient(90deg,var(--accent-3),#86ef8c);border-radius:4px"></div>
+              </div>
+              <span style="font-family:var(--font-mono);font-size:16px;font-weight:700;color:var(--accent-3)">96%</span>
+            </div>
+          </div>
+
+          <!-- AI chat -->
+          <div class="ai-panel-block" style="overflow-y:auto">
+            <div class="ai-block-title">🧠 AI ANALYST RESPONSE</div>
+
+            <div class="ai-chat-msg system">
+              Classification: RANSOMWARE_PRECURSOR<br>
+              Technique: T1486 · Data Encrypted for Impact<br>
+              Campaign: LockBit 3.0 variant (conf: 87%)
+            </div>
+
+            <div class="ai-chat-msg analyst">
+              <strong style="color:var(--accent)">AI Analyst:</strong> I've analyzed all 47 events
+              associated with Case INC-2024-0847. The pattern matches an active LockBit 3.0 precursor
+              chain. The threat actor performed credential dumping on FINANCE-PC-03 at 14:22 UTC,
+              followed by lateral movement to 3 adjacent hosts before beginning encryption staging.
+            </div>
+
+            <div class="ai-chat-msg user">
+              What should I do immediately?
+            </div>
+
+            <div class="ai-chat-msg analyst">
+              <strong style="color:var(--accent)">AI Analyst:</strong> Recommended actions (priority order):<br><br>
+              1. <strong>Isolate FINANCE-PC-03</strong> from network immediately<br>
+              2. Reset credentials for <strong>j.smith</strong> and revoke all active sessions<br>
+              3. Block outbound connections to <strong>45.33.32.156</strong> (C2 server)<br>
+              4. Snapshot and preserve disk image before encryption spreads<br>
+              5. Notify CISO — ransomware potential confirmed
+              <span class="typing-cursor"></span>
+            </div>
+
+            <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn btn-primary btn-sm" onclick="this.textContent='✓ Executed'">⚡ Execute Isolation Playbook</button>
+              <button class="btn btn-outline btn-sm" onclick="this.textContent='✓ Blocked'">🛡 Block C2 IP</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:24px">
+        <a href="/contact.html" class="btn btn-primary">Try AI Analyst on Your Own Data →</a>
+      </div>
+    </div>
+
+    <!-- VIEW: Detection Rules -->
+    <div class="demo-view" id="view-rules" role="tabpanel" aria-labelledby="btn-rules">
+      <div class="demo-embed-container">
+        <div class="demo-embed-bar">
+          <span>🔍 Detection Rule Builder</span>
+          <span style="color:var(--accent-3)">312 active rules · 0 errors</span>
+        </div>
+        <div style="height:580px;background:var(--bg-0);display:grid;grid-template-columns:280px 1fr;gap:0;overflow:hidden">
+          <!-- Rule list -->
+          <div style="background:var(--bg-1);border-right:1px solid var(--border);overflow:auto">
+            <div style="padding:12px 14px;background:var(--bg-2);border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:9px;color:var(--text-lo)">
+              ACTIVE RULES (312)
+            </div>
+            <div id="ruleList"></div>
+          </div>
+          <!-- Rule editor -->
+          <div style="padding:20px;overflow:auto">
+            <div style="font-family:var(--font-mono);font-size:9px;color:var(--text-lo);margin-bottom:12px">
+              RULE EDITOR — brute_force_login_ad.yaml
+            </div>
+            <pre style="background:var(--bg-2);border:1px solid var(--border);border-radius:6px;padding:16px;font-family:var(--font-mono);font-size:11px;color:var(--text-mid);overflow:auto;line-height:1.7"><code><span style="color:#a78bfa">name:</span> <span style="color:#38bdf8">Brute Force Login — Active Directory</span>
+<span style="color:#a78bfa">severity:</span> <span style="color:#ff1744">CRITICAL</span>
+<span style="color:#a78bfa">mitre:</span>
+  - <span style="color:#22c55e">T1110.001</span>  <span style="color:var(--text-lo)"># Password Guessing</span>
+  - <span style="color:#22c55e">T1078</span>      <span style="color:var(--text-lo)"># Valid Accounts</span>
+
+<span style="color:#a78bfa">detection:</span>
+  <span style="color:#a78bfa">condition:</span> <span style="color:#38bdf8">event_count &gt;= 10</span>
+  <span style="color:#a78bfa">timeframe:</span> <span style="color:#ffd54f">60s</span>
+  <span style="color:#a78bfa">filters:</span>
+    - <span style="color:#38bdf8">event_type: windows_security</span>
+      <span style="color:#38bdf8">event_id: 4625</span>      <span style="color:var(--text-lo)"># Failed logon</span>
+    - <span style="color:#38bdf8">target_domain: CORP</span>
+
+<span style="color:#a78bfa">response:</span>
+  <span style="color:#a78bfa">alert:</span>   <span style="color:#22c55e">true</span>
+  <span style="color:#a78bfa">playbook:</span> <span style="color:#38bdf8">isolate_source_ip</span>
+  <span style="color:#a78bfa">notify:</span>  <span style="color:#38bdf8">[slack, pagerduty]</span></code></pre>
+            <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+              <button class="btn btn-primary  btn-sm" onclick="this.textContent='✓ Deployed'">Deploy Rule</button>
+              <button class="btn btn-outline  btn-sm" onclick="showBacktest()">Run Backtest</button>
+              <button class="btn btn-outline  btn-sm" style="color:var(--accent-3);border-color:var(--accent-3)" onclick="this.textContent='✓ Validated'">Validate Syntax</button>
+            </div>
+            <div id="backtestResult" style="display:none;margin-top:16px;background:var(--bg-2);border:1px solid #22c55e33;border-radius:6px;padding:14px">
+              <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent-3);margin-bottom:8px">▶ BACKTEST — Last 30 days</div>
+              <div style="font-family:var(--font-mono);font-size:11px;color:var(--text-mid);line-height:1.8">
+                Matches found: <span style="color:var(--accent)">1,247</span><br>
+                True positives: <span style="color:var(--accent-3)">1,239 (99.4%)</span><br>
+                False positives: <span style="color:var(--warn)">8 (0.6%)</span><br>
+                Recommended threshold: <span style="color:var(--accent)">12 failed logins / 60s</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:24px">
+        <a href="/contact.html" class="btn btn-primary">Build Your Own Detection Rules →</a>
+      </div>
+    </div>
+
+    <!-- VIEW: Pipeline Metrics -->
+    <div class="demo-view" id="view-metrics" role="tabpanel" aria-labelledby="btn-metrics">
+      <div class="demo-embed-container">
+        <div class="demo-embed-bar">
+          <span>📡 Real-Time Pipeline Metrics</span>
+          <span style="color:var(--accent-3)"><span class="demo-live-dot"></span> Live streaming</span>
+        </div>
+        <div style="height:580px;background:var(--bg-0);padding:20px;overflow:auto">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px">
+            <div style="background:var(--bg-1);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center">
+              <div style="font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--accent)" id="m-eps">4,218</div>
+              <div style="font-size:11px;color:var(--text-lo);margin-top:4px">Events / sec</div>
+            </div>
+            <div style="background:var(--bg-1);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center">
+              <div style="font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--warn)" id="m-q">127</div>
+              <div style="font-size:11px;color:var(--text-lo);margin-top:4px">Queue depth</div>
+            </div>
+            <div style="background:var(--bg-1);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center">
+              <div style="font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--accent-3)">3</div>
+              <div style="font-size:11px;color:var(--text-lo);margin-top:4px">DLQ messages</div>
+            </div>
+            <div style="background:var(--bg-1);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center">
+              <div style="font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--accent-2)">6</div>
+              <div style="font-size:11px;color:var(--text-lo);margin-top:4px">Active workers</div>
+            </div>
+            <div style="background:var(--bg-1);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center">
+              <div style="font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--accent)">99.99%</div>
+              <div style="font-size:11px;color:var(--text-lo);margin-top:4px">Uptime (30d)</div>
+            </div>
+            <div style="background:var(--bg-1);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center">
+              <div style="font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--accent-3)" id="m-lat">1.8ms</div>
+              <div style="font-size:11px;color:var(--text-lo);margin-top:4px">P99 latency</div>
+            </div>
+          </div>
+
+          <!-- Sparklines -->
+          <div style="background:var(--bg-1);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:16px">
+            <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-lo);margin-bottom:10px">EVENTS/SEC — LAST 60s</div>
+            <canvas id="sparkCanvas" width="800" height="80" style="width:100%;height:80px"></canvas>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div style="background:var(--bg-1);border:1px solid var(--border);border-radius:8px;padding:14px">
+              <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-lo);margin-bottom:10px">TOPIC THROUGHPUT</div>
+              <div id="topicRows"></div>
+            </div>
+            <div style="background:var(--bg-1);border:1px solid var(--border);border-radius:8px;padding:14px">
+              <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-lo);margin-bottom:10px">WORKER STATUS</div>
+              <div id="workerRows"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:24px">
+        <a href="/contact.html" class="btn btn-primary">Connect Your Data Sources →</a>
+      </div>
+    </div>
+
+  </div><!-- /container -->
+</section>
+
+<!-- CAPABILITIES GRID -->
+<section style="padding:80px 0;background:var(--bg-1);border-top:1px solid var(--border)" aria-labelledby="caps-title">
+  <div class="container">
+    <h2 class="section-title" id="caps-title" style="margin-bottom:8px">What you can do in the demo</h2>
+    <p class="section-sub" style="margin-bottom:0">All demo data is synthetic but realistic — safe to explore freely.</p>
+    <div class="demo-feature-grid">
+      <div class="demo-cap-card"><div class="demo-cap-icon">🌐</div><div><div class="demo-cap-title">Live attack globe</div><div class="demo-cap-desc">Explore real-time global attack visualization with drill-down capability</div></div></div>
+      <div class="demo-cap-card"><div class="demo-cap-icon">🧠</div><div><div class="demo-cap-title">AI triage chat</div><div class="demo-cap-desc">Chat with the AI SOC analyst and execute recommended response actions</div></div></div>
+      <div class="demo-cap-card"><div class="demo-cap-icon">🔍</div><div><div class="demo-cap-title">Rule builder</div><div class="demo-cap-desc">Create detection rules and run backtests against 30 days of synthetic log data</div></div></div>
+      <div class="demo-cap-card"><div class="demo-cap-icon">🕸</div><div><div class="demo-cap-title">Investigation graph</div><div class="demo-cap-desc">Navigate entity relationship graphs auto-built from incident telemetry</div></div></div>
+      <div class="demo-cap-card"><div class="demo-cap-icon">📡</div><div><div class="demo-cap-title">Pipeline metrics</div><div class="demo-cap-desc">Monitor event ingestion rates, queue health, and processing latency live</div></div></div>
+      <div class="demo-cap-card"><div class="demo-cap-icon">🛡</div><div><div class="demo-cap-title">Command center</div><div class="demo-cap-desc">Experience the full-screen SOC war room dashboard in action</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-band" aria-labelledby="demo-cta-title">
+  <div class="container">
+    <span class="badge" style="margin-bottom:20px;display:inline-flex">🚀 Ready to deploy?</span>
+    <h2 class="cta-title" id="demo-cta-title">Start your free 14-day trial</h2>
+    <p class="cta-sub">No credit card. Full platform access. Onboarding in under 5 minutes.</p>
+    <div class="cta-actions">
+      <a href="/contact.html" class="btn btn-primary btn-lg">Start Free Trial</a>
+      <a href="/pricing.html" class="btn btn-outline btn-lg">See Pricing</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-weight:700;font-size:16px;color:var(--text-hi)">
+          <span style="font-size:20px">🛡</span>Cyber<span style="color:var(--accent)">Sentinel</span>&nbsp;AI
+        </div>
+        <p class="footer-brand-desc">Autonomous AI Cyber Defense Platform. Trusted by 500+ enterprise security teams.</p>
+      </div>
+      <div>
+        <div class="footer-heading">Product</div>
+        <nav class="footer-links"><a href="/#features">AI SOC Analyst</a><a href="/#features">Attack Globe</a><a href="/#features">Detection Rules</a></nav>
+      </div>
+      <div>
+        <div class="footer-heading">Company</div>
+        <nav class="footer-links"><a href="#">About</a><a href="/contact.html">Contact</a><a href="#">Blog</a></nav>
+      </div>
+      <div>
+        <div class="footer-heading">Resources</div>
+        <nav class="footer-links"><a href="#">Docs</a><a href="/pricing.html">Pricing</a><a href="#">Status</a></nav>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 CyberSentinel AI. All rights reserved.</span>
+      <div class="footer-legal"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">SOC 2</a></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── Demo pill navigation ──────────────────────────────────────────────────
+document.querySelectorAll('.demo-pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.demo-pill').forEach(p => { p.classList.remove('active'); p.setAttribute('aria-selected','false'); });
+    document.querySelectorAll('.demo-view').forEach(v => v.classList.remove('active'));
+    pill.classList.add('active');
+    pill.setAttribute('aria-selected','true');
+    document.getElementById(pill.dataset.target).classList.add('active');
+  });
+});
+
+// ── Detection rule list ───────────────────────────────────────────────────
+const RULES = [
+  { name: 'brute_force_login_ad',     sev: 'CRIT', col: '#ff5555' },
+  { name: 'lateral_movement_smb',     sev: 'HIGH', col: '#ff9944' },
+  { name: 'data_exfil_large_upload',  sev: 'CRIT', col: '#ff5555' },
+  { name: 'c2_beacon_detect',         sev: 'HIGH', col: '#ff9944' },
+  { name: 'ransomware_staging',       sev: 'CRIT', col: '#ff5555' },
+  { name: 'privilege_escalation',     sev: 'HIGH', col: '#ff9944' },
+  { name: 'port_scan_internal',       sev: 'MED',  col: '#ffd54f' },
+  { name: 'failed_mfa_burst',         sev: 'HIGH', col: '#ff9944' },
+  { name: 'dns_tunneling',            sev: 'MED',  col: '#ffd54f' },
+  { name: 'new_admin_account',        sev: 'MED',  col: '#ffd54f' },
+];
+const rl = document.getElementById('ruleList');
+if (rl) {
+  RULES.forEach(r => {
+    rl.innerHTML += `<div style="padding:8px 14px;border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:9px;cursor:pointer;transition:background var(--transition)"
+      onmouseover="this.style.background='var(--bg-2)'" onmouseout="this.style.background=''">
+      <span style="color:${r.col}">[${r.sev}]</span>
+      <span style="color:var(--text-lo);margin-left:4px">${r.name}</span>
+    </div>`;
+  });
+}
+
+// ── Pipeline topic rows ───────────────────────────────────────────────────
+const TOPICS = [
+  { name: 'telemetry_events',  val: '4,218/s', pct: 85, col: 'var(--accent)' },
+  { name: 'rule_evaluations',  val: '312/s',   pct: 55, col: 'var(--warn)' },
+  { name: 'alerts_generated',  val: '41/s',    pct: 32, col: 'var(--danger)' },
+  { name: 'graph_updates',     val: '12/s',    pct: 15, col: 'var(--accent-2)' },
+];
+const tr = document.getElementById('topicRows');
+if (tr) {
+  TOPICS.forEach(t => {
+    tr.innerHTML += `<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:9px;margin-bottom:3px">
+        <span style="color:var(--text-lo)">${t.name}</span><span style="color:${t.col}">${t.val}</span>
+      </div>
+      <div style="height:4px;background:var(--border);border-radius:2px">
+        <div style="width:${t.pct}%;height:100%;background:${t.col};border-radius:2px"></div>
+      </div>
+    </div>`;
+  });
+}
+
+const WORKERS = [
+  { name: 'rule_evaluation',  status: 'RUNNING', col: 'var(--accent-3)' },
+  { name: 'alert_generation', status: 'RUNNING', col: 'var(--accent-3)' },
+  { name: 'graph_updater',    status: 'RUNNING', col: 'var(--accent-3)' },
+  { name: 'ioc_correlator',   status: 'RUNNING', col: 'var(--accent-3)' },
+  { name: 'dlq_consumer',     status: 'IDLE',    col: '#ffd54f' },
+  { name: 'playbook_engine',  status: 'RUNNING', col: 'var(--accent-3)' },
+];
+const wr = document.getElementById('workerRows');
+if (wr) {
+  WORKERS.forEach(w => {
+    wr.innerHTML += `<div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:9px;padding:5px 0;border-bottom:1px solid var(--border)">
+      <span style="color:var(--text-lo)">${w.name}</span>
+      <span style="color:${w.col}">${w.status}</span>
+    </div>`;
+  });
+}
+
+// ── Sparkline canvas ──────────────────────────────────────────────────────
+function drawSparkline() {
+  const canvas = document.getElementById('sparkCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const pts = 60;
+  const data = Array.from({length: pts}, (_, i) =>
+    3800 + Math.sin(i * 0.4) * 600 + (Math.random() - 0.5) * 400
+  );
+  const min = Math.min(...data), max = Math.max(...data);
+  const x = (i) => (i / (pts - 1)) * W;
+  const y = (v) => H - ((v - min) / (max - min)) * H * 0.85 - 4;
+
+  ctx.clearRect(0, 0, W, H);
+  // Fill
+  ctx.beginPath();
+  ctx.moveTo(x(0), H);
+  data.forEach((v, i) => ctx.lineTo(x(i), y(v)));
+  ctx.lineTo(x(pts - 1), H);
+  ctx.closePath();
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, '#38bdf822');
+  grad.addColorStop(1, 'transparent');
+  ctx.fillStyle = grad;
+  ctx.fill();
+  // Line
+  ctx.beginPath();
+  data.forEach((v, i) => i ? ctx.lineTo(x(i), y(v)) : ctx.moveTo(x(i), y(v)));
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+}
+drawSparkline();
+setInterval(drawSparkline, 2000);
+
+// ── Backtest toggle ───────────────────────────────────────────────────────
+function showBacktest() {
+  const el = document.getElementById('backtestResult');
+  if (el) { el.style.display = el.style.display === 'none' ? 'block' : 'none'; }
+}
+
+// ── Live counter updates ──────────────────────────────────────────────────
+function randomDelta(val, spread) { return Math.max(0, val + Math.round((Math.random() - 0.5) * spread)); }
+setInterval(() => {
+  const eps = document.getElementById('eps');
+  if (eps) { const v = randomDelta(4218, 200); eps.textContent = v.toLocaleString(); }
+  const crit = document.getElementById('crit');
+  if (crit) { crit.textContent = randomDelta(247, 4); }
+  const mEps = document.getElementById('m-eps');
+  if (mEps) { mEps.textContent = randomDelta(4218, 200).toLocaleString(); }
+  const mQ = document.getElementById('m-q');
+  if (mQ) { mQ.textContent = randomDelta(127, 20); }
+  const mLat = document.getElementById('m-lat');
+  const latencies = ['1.4ms','1.6ms','1.8ms','2.1ms','1.9ms'];
+  if (mLat) { mLat.textContent = latencies[Math.floor(Math.random() * latencies.length)]; }
+}, 1800);
+
+// ── Hamburger nav ─────────────────────────────────────────────────────────
+document.querySelector('.nav-hamburger')?.addEventListener('click', function(){
+  const expanded = this.getAttribute('aria-expanded') === 'true';
+  this.setAttribute('aria-expanded', !expanded);
+  document.querySelector('.nav-links').style.display = expanded ? '' : 'flex';
+});
+</script>
+
+</body>
+</html>

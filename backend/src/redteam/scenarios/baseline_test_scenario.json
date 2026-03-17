@@ -1,0 +1,13 @@
+{
+  "name": "Baseline Validation Scenario",
+  "description": "Minimal scenario used for automation test validation.",
+  "techniques": [
+    "T1059"
+  ],
+  "stages": [
+    {
+      "type": "initial_access",
+      "details": "Synthetic event for test coverage"
+    }
+  ]
+}

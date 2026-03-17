@@ -1,0 +1,31 @@
+{
+  "dashboard": {
+    "title": "CyberChef AI Monitoring",
+    "panels": [
+      {
+        "type": "graph",
+        "title": "API Response Time",
+        "targets": [{"expr": "api_response_time_seconds"}],
+        "datasource": "Prometheus"
+      },
+      {
+        "type": "graph",
+        "title": "Error Rate",
+        "targets": [{"expr": "api_error_count"}],
+        "datasource": "Prometheus"
+      },
+      {
+        "type": "graph",
+        "title": "CPU Usage",
+        "targets": [{"expr": "process_cpu_seconds_total"}],
+        "datasource": "Prometheus"
+      },
+      {
+        "type": "graph",
+        "title": "Memory Usage",
+        "targets": [{"expr": "process_resident_memory_bytes"}],
+        "datasource": "Prometheus"
+      }
+    ]
+  }
+}

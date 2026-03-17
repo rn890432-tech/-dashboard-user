@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Recipe</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Edit Recipe</h1>
+    <a href="/recipe/<%= recipe.id %>" class="back-btn">Back to Recipe</a>
+  </header>
+  <main>
+    <form class="recipe-form" action="/recipe/<%= recipe.id %>/edit" method="POST" enctype="multipart/form-data">
+      <label>Title
+        <input type="text" name="title" value="<%= recipe.title %>" required>
+      </label>
+      <label>Description
+        <input type="text" name="description" value="<%= recipe.description %>" required>
+      </label>
+      <label>Ingredients
+        <textarea name="ingredients" required><%= recipe.ingredients %></textarea>
+      </label>
+      <label>Instructions
+        <textarea name="instructions" required><%= recipe.instructions %></textarea>
+      </label>
+      <% if (recipe.imageUrl) { %>
+        <img src="<%= recipe.imageUrl %>" alt="Current Image" class="recipe-img" />
+      <% } %>
+      <label>Change Image
+        <input type="file" name="image" accept="image/*">
+      </label>
+      <button type="submit">Save Changes</button>
+    </form>
+  </main>
+  <footer>
+    <p>&copy; 2026 Recipe Share</p>
+  </footer>
+</body>
+</html>

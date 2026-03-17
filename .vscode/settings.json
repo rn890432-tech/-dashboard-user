@@ -7,5 +7,7 @@
         "~/.agents/skills": true,
         "~/.claude/skills": true,
         "~/.vscode/extensions/synapsevscode.synapse-1.20.1/copilot/skills": true
-    }
+    },
+    "python-envs.defaultEnvManager": "ms-python.python:system",
+    "python.analysis.typeCheckingMode": "strict"
 }

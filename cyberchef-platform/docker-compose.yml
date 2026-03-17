@@ -1,0 +1,59 @@
+version: '3.8'
+services:
+  auth-service:
+    build: ./services/auth-service
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env.example
+  recipe-service:
+    build: ./services/recipe-service
+    ports:
+      - "5001:5001"
+    env_file:
+      - .env.example
+  ai-service:
+    build: ./services/ai-service
+    ports:
+      - "5002:5002"
+    env_file:
+      - .env.example
+  feed-service:
+    build: ./services/feed-service
+    ports:
+      - "5003:5003"
+    env_file:
+      - .env.example
+  billing-service:
+    build: ./services/billing-service
+    ports:
+      - "5004:5004"
+    env_file:
+      - .env.example
+  analytics-service:
+    build: ./services/analytics-service
+    ports:
+      - "5005:5005"
+    env_file:
+      - .env.example
+  video-service:
+    build: ./services/video-service
+    ports:
+      - "5006:5006"
+    env_file:
+      - .env.example
+  mongodb:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+volumes:
+  mongo-data:
+  redis-data:
