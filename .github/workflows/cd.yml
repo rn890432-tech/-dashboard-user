@@ -3,206 +3,200 @@ name: CD - Deploy
 # CD workflow: deploy orchestration, approvals, and post-deploy checks.
 
 on:
-    workflow_run:
-        workflows: ["CI - Build & Test"]
-        types: [completed]
-    workflow_dispatch:
-        inputs:
-            deploy_environment:
-                description: "Target environment"
-                required: true
-                default: staging
-                type: choice
-                options:
-                    - staging
-                    - production
+  workflow_run:
+    workflows: ["CI - Build & Test"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      deploy_environment:
+        description: "Target environment"
+        required: true
+        default: staging
+        type: choice
+        options:
+          - staging
+          - production
 
 run-name: CD • ${{ github.event_name }} • ${{ github.ref_name }}
 
 concurrency:
-    group: cd-${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch || github.ref_name }}
-    cancel-in-progress: false
+  group: cd-${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch || github.ref_name }}
+  cancel-in-progress: false
 
 permissions:
-    contents: read
+  contents: read
 
 jobs:
-    deploy-staging:
-        name: Deploy Staging
-        if: >-
-            (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' &&
-            (github.event.workflow_run.head_branch == 'main' || github.event.workflow_run.head_branch == 'staging')) ||
-            (github.event_name == 'workflow_dispatch')
-        runs-on: ubuntu-latest
-        environment:
-            name: staging
-        outputs:
-            deploy_duration: ${{ steps.duration.outputs.deploy_duration }}
-        steps:
-            - uses: actions/checkout@v4
+  deploy-staging:
+    name: Deploy Staging
+    if: >-
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' &&
+      (github.event.workflow_run.head_branch == 'main' || github.event.workflow_run.head_branch == 'staging')) ||
+      (github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+    outputs:
+      deploy_duration: ${{ steps.duration.outputs.deploy_duration }}
+    steps:
+      - uses: actions/checkout@v4
 
-            - uses: actions/setup-node@v4
-              with:
-                  node-version: 22
-                  cache: npm
-                  cache-dependency-path: package-lock.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
 
-            - name: Check deploy secret availability
-              id: verify
-              env:
-                  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-              run: |
-                  if [ -z "$VERCEL_TOKEN" ]; then
-                    echo "can_deploy=false" >> $GITHUB_OUTPUT
-                    echo "VERCEL_TOKEN missing: staging deploy will be skipped."
-                  else
-                    echo "can_deploy=true" >> $GITHUB_OUTPUT
-                  fi
+      - name: Check deploy secret availability
+        id: verify
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "can_deploy=false" >> $GITHUB_OUTPUT
+            echo "VERCEL_TOKEN missing: staging deploy will be skipped."
+          else
+            echo "can_deploy=true" >> $GITHUB_OUTPUT
+          fi
 
-            - name: Record start time
-              id: start
-              if: steps.verify.outputs.can_deploy == 'true'
-              run: echo "start=$(date +%s)" >> $GITHUB_OUTPUT
+      - name: Record start time
+        id: start
+        if: steps.verify.outputs.can_deploy == 'true'
+        run: echo "start=$(date +%s)" >> $GITHUB_OUTPUT
 
-            - name: Deploy to Staging
-              if: steps.verify.outputs.can_deploy == 'true'
-              env:
-                  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-              run: vercel --prod --token "$VERCEL_TOKEN"
+      - name: Deploy to Staging
+        if: steps.verify.outputs.can_deploy == 'true'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: vercel --prod --token "$VERCEL_TOKEN"
 
-            - name: Skip staging deploy (missing secret)
-              if: steps.verify.outputs.can_deploy != 'true'
-              run: echo "Skipping staging deploy because VERCEL_TOKEN is not configured."
+      - name: Skip staging deploy (missing secret)
+        if: steps.verify.outputs.can_deploy != 'true'
+        run: echo "Skipping staging deploy because VERCEL_TOKEN is not configured."
 
-            - name: Record end time
-              id: end
-              if: steps.verify.outputs.can_deploy == 'true'
-              run: echo "end=$(date +%s)" >> $GITHUB_OUTPUT
+      - name: Record end time
+        id: end
+        if: steps.verify.outputs.can_deploy == 'true'
+        run: echo "end=$(date +%s)" >> $GITHUB_OUTPUT
 
-            - name: Calculate duration
-              id: duration
-              run: |
-                  if [ "${{ steps.verify.outputs.can_deploy }}" = "true" ]; then
-                    duration=$(( ${{ steps.end.outputs.end }} - ${{ steps.start.outputs.start }} ))
-                  else
-                    duration=0
-                  fi
-                  echo "deploy_duration=${duration}" >> $GITHUB_OUTPUT
+      - name: Calculate duration
+        id: duration
+        run: |
+          if [ "${{ steps.verify.outputs.can_deploy }}" = "true" ]; then
+            duration=$(( ${{ steps.end.outputs.end }} - ${{ steps.start.outputs.start }} ))
+          else
+            duration=0
+          fi
+          echo "deploy_duration=${duration}" >> $GITHUB_OUTPUT
 
-    production-approval:
-        name: Production Approval Gate
-        needs: deploy-staging
-        if: >-
-            (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main') ||
-            (github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_environment == 'production')
-        runs-on: ubuntu-latest
-        environment:
-            name: production
-        steps:
-            - name: Await production approval
-              run: echo "Production deployment approved by environment gate"
+  production-approval:
+    name: Production Approval Gate
+    needs: deploy-staging
+    if: >-
+      (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_environment == 'production')
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    steps:
+      - name: Await production approval
+        run: echo "Production deployment approved by environment gate"
 
-    deploy-production:
-        name: Deploy Production
-        needs: [deploy-staging, production-approval]
-        if: always() && needs.production-approval.result == 'success'
-        runs-on: ubuntu-latest
-        environment:
-            name: production
-            url: ${{ steps.deploy.outputs.url }}
-        outputs:
-            deploy_duration: ${{ steps.duration.outputs.deploy_duration }}
-        steps:
-            - uses: actions/checkout@v4
+  deploy-production:
+    name: Deploy Production
+    needs: [deploy-staging, production-approval]
+    if: always() && needs.production-approval.result == 'success'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.url }}
+    outputs:
+      deploy_duration: ${{ steps.duration.outputs.deploy_duration }}
+    steps:
+      - uses: actions/checkout@v4
 
-            - uses: actions/setup-node@v4
-              with:
-                  node-version: 22
-                  cache: npm
-                  cache-dependency-path: package-lock.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
 
-            - name: Check deploy secret availability
-              id: verify
-              env:
-                  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-              run: |
-                  if [ -z "$VERCEL_TOKEN" ]; then
-                    echo "can_deploy=false" >> $GITHUB_OUTPUT
-                    echo "VERCEL_TOKEN missing: production deploy will be skipped."
-                  else
-                    echo "can_deploy=true" >> $GITHUB_OUTPUT
-                  fi
+      - name: Check deploy secret availability
+        id: verify
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "can_deploy=false" >> $GITHUB_OUTPUT
+            echo "VERCEL_TOKEN missing: production deploy will be skipped."
+          else
+            echo "can_deploy=true" >> $GITHUB_OUTPUT
+          fi
 
-            - name: Record start time
-              id: start
-              if: steps.verify.outputs.can_deploy == 'true'
-              run: echo "start=$(date +%s)" >> $GITHUB_OUTPUT
+      - name: Record start time
+        id: start
+        if: steps.verify.outputs.can_deploy == 'true'
+        run: echo "start=$(date +%s)" >> $GITHUB_OUTPUT
 
-            - name: Deploy to Production
-              id: deploy
-              if: steps.verify.outputs.can_deploy == 'true'
-              env:
-                  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-              run: vercel --prod --token "$VERCEL_TOKEN"
+      - name: Deploy to Production
+        id: deploy
+        if: steps.verify.outputs.can_deploy == 'true'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: vercel --prod --token "$VERCEL_TOKEN"
 
-            - name: Skip production deploy (missing secret)
-              if: steps.verify.outputs.can_deploy != 'true'
-              run: echo "Skipping production deploy because VERCEL_TOKEN is not configured."
+      - name: Skip production deploy (missing secret)
+        if: steps.verify.outputs.can_deploy != 'true'
+        run: echo "Skipping production deploy because VERCEL_TOKEN is not configured."
 
-            - name: Record end time
-              id: end
-              if: steps.verify.outputs.can_deploy == 'true'
-              run: echo "end=$(date +%s)" >> $GITHUB_OUTPUT
+      - name: Record end time
+        id: end
+        if: steps.verify.outputs.can_deploy == 'true'
+        run: echo "end=$(date +%s)" >> $GITHUB_OUTPUT
 
-            - name: Calculate duration
-              id: duration
-              run: |
-                  if [ "${{ steps.verify.outputs.can_deploy }}" = "true" ]; then
-                    duration=$(( ${{ steps.end.outputs.end }} - ${{ steps.start.outputs.start }} ))
-                  else
-                    duration=0
-                  fi
-                  echo "deploy_duration=${duration}" >> $GITHUB_OUTPUT
+      - name: Calculate duration
+        id: duration
+        run: |
+          if [ "${{ steps.verify.outputs.can_deploy }}" = "true" ]; then
+            duration=$(( ${{ steps.end.outputs.end }} - ${{ steps.start.outputs.start }} ))
+          else
+            duration=0
+          fi
+          echo "deploy_duration=${duration}" >> $GITHUB_OUTPUT
 
-    check-thresholds:
-        name: Check Deploy Thresholds
-        needs: deploy-production
-        if: needs.deploy-production.result == 'success'
-        runs-on: ubuntu-latest
-        outputs:
-            alert: ${{ steps.check.outputs.alert }}
-        steps:
-            - name: Check thresholds
-              id: check
-              run: |
-                  duration=${{ needs.deploy-production.outputs.deploy_duration }}
-                  alert="false"
-                  if [ "$duration" -gt 120 ]; then alert="true"; fi
-                  echo "alert=$alert" >> $GITHUB_OUTPUT
+  check-thresholds:
+    name: Check Deploy Thresholds
+    needs: deploy-production
+    if: needs.deploy-production.result == 'success'
+    runs-on: ubuntu-latest
+    outputs:
+      alert: ${{ steps.check.outputs.alert }}
+    steps:
+      - name: Check thresholds
+        id: check
+        run: |
+          duration=${{ needs.deploy-production.outputs.deploy_duration }}
+          alert="false"
+          if [ "$duration" -gt 120 ]; then alert="true"; fi
+          echo "alert=$alert" >> $GITHUB_OUTPUT
 
-    notify-slow:
-        name: Notify Slow Deploy
-        needs: [check-thresholds, deploy-production]
-        if: needs.check-thresholds.outputs.alert == 'true'
-        runs-on: ubuntu-latest
-        steps:
-            - name: Slow deploy summary
-              run: |
-                  echo "Slow deploy detected: ${{ needs.deploy-production.outputs.deploy_duration }}s"
+  notify-slow:
+    name: Notify Slow Deploy
+    needs: [check-thresholds, deploy-production]
+    if: needs.check-thresholds.outputs.alert == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Slow deploy summary
+        run: |
+          echo "Slow deploy detected: ${{ needs.deploy-production.outputs.deploy_duration }}s"
 
-    failure-summary:
-        name: Failure Summary
-        if: failure()
-        needs:
-            [
-                deploy-staging,
-                production-approval,
-                deploy-production,
-                check-thresholds,
-                notify-slow,
-            ]
-        runs-on: ubuntu-latest
-        steps:
-            - name: Emit failure summary
-              run: |
-                  echo "One or more CD jobs failed. Review run logs for details."
+  failure-summary:
+    name: Failure Summary
+    if: always() && failure()
+    needs:
+      [deploy-staging, production-approval, deploy-production, check-thresholds]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Emit failure summary
+        run: |
+          echo "One or more CD jobs failed. Review run logs for details."
