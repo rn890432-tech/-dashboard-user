@@ -1,0 +1,93 @@
++===========================================================================================+
+|                  GHOST-WALK PHASE 2 — 802.1X / MAB CHEAT-SHEET (ONE-PAGER)             |
+|                              Turno operativo: 18 marzo 2026                              |
++===========================================================================================+
+| STATO / TRIGGER        | SOGLIA                              | AZIONE IMMEDIATA           |
++------------------------+-------------------------------------+----------------------------+
+| VERDE                  | Operatività normale                 | Monitoraggio standard      |
+| AMBRA                  | 5–15% utenti disconnessi            | Verifica + MAB selettivo   |
+| ROSSO                  | >15% disconnessi / servizi critici  | MAB su porte affette       |
+| NERO                   | MAB inefficace / impatto critico    | Panic Button rollback      |
++------------------------+-------------------------------------+----------------------------+
+
+[1] TRIAGE 3-MIN
+  1) Verifica se endpoint è su porta 802.1X
+  2) Controlla stato sessione auth
+  3) Se FAILED/UNAUTHORIZED -> attiva MAB (porta o range)
+  4) Se persiste impatto massivo -> escalation + Panic Button
+
++-------------------------------------------------------------------------------------------+
+| VERIFICA RAPIDA 802.1X (CISCO IOS/IOS-XE)                                                |
++-------------------------------------------------------------------------------------------+
+show authentication sessions
+show authentication sessions interface <PORTA> detail
+show dot1x all
+show aaa servers
+show radius statistics
+show logging | include DOT1X|RADIUS|AUTH|MAB
+show interfaces <PORTA> status
+show mac address-table | include <MAC>
+
++-------------------------------------------------------------------------------------------+
+| ATTIVA MAB SU PORTA SINGOLA (EMERGENZA MIRATA)                                           |
++-------------------------------------------------------------------------------------------+
+conf t
+interface <PORTA>
+ authentication order dot1x mab
+ authentication priority dot1x mab
+ mab
+ authentication timer restart 1
+end
+write memory
+show authentication sessions interface <PORTA> detail
+
++-------------------------------------------------------------------------------------------+
+| ATTIVA MAB SU RANGE PORTE (EMERGENZA AMBRA/ROSSO)                                        |
++-------------------------------------------------------------------------------------------+
+conf t
+interface range Gi1/0/1 - 24
+ authentication order dot1x mab
+ authentication priority dot1x mab
+ mab
+ authentication timer restart 1
+end
+write memory
+show authentication sessions | include Gi1/0
+
++-------------------------------------------------------------------------------------------+
+| PANIC BUTTON — ROLLBACK 802.1X COMPLETO (SOLO P1 / AUTORIZZAZIONE CISO O LEAD)          |
++-------------------------------------------------------------------------------------------+
+conf t
+no dot1x system-auth-control
+interface range Gi1/0/1 - 24
+ no authentication port-control
+ switchport access vlan <VLAN_OPERATIVA>
+end
+write memory
+show dot1x all
+show interfaces status
+
++-------------------------------------------------------------------------------------------+
+| POST-CHECK (OBBLIGATORIO)                                                                |
++-------------------------------------------------------------------------------------------+
+show authentication sessions interface <PORTA> detail
+show interfaces <PORTA> switchport
+show logging last 50 | include AUTH|MAB|RADIUS
+(ping gateway + test applicativo utente)
+
++-------------------------------------------------------------------------------------------+
+| ESCALATION MATRIX                                                                         |
++-------------------------------------------------------------------------------------------+
+L1 NOC      : Porta singola failed -> MAB singola porta
+L2 Network  : >3 porte affette / switch -> MAB range + verifica ISE/RADIUS
+L3 Security : ISE unreachable / RADIUS down -> valutare rollback
+CRITICO     : >20% sede disconnessa -> bridge call immediata + ticket P1
+
+Bridge emergenza: +39 XXX XXX XXXX
+Canale war-room : #incident-response-live
+Tag ITSM P1     : 802.1X-FALLBACK
+
+NOTE OPERATIVE:
+- MAB è temporaneo, sempre con least privilege.
+- Se ISE è operativo, preferire fallback da policy centralizzata.
+- Ogni attivazione fallback deve avere owner + timestamp + piano di rientro.
