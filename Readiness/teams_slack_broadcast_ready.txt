@@ -1,0 +1,16 @@
+GO-LIVE OGGI | Branch Pilot 802.1X | War-Room Attiva
+
+Team NOC/SOC/Network,
+da ora è attivo il Go-Live operativo del pilot branch office (100 utenti).
+
+🔴 Canale war-room: #incident-response-live
+📞 Bridge emergenza: +39 XXX XXX XXXX
+🎫 Tag ticket P1: 802.1X-FALLBACK
+
+Trigger rapidi escalation:
+- AMBRA (5–15% disconnessi): verifica immediata + MAB selettivo
+- ROSSO (>15% o servizi critici): MAB su porte affette + escalation L2/L3
+- CRITICO (>20% sede disconnessa): bridge call immediata + P1
+- NERO: attivare Panic Button (rollback 802.1X completo con autorizzazione CISO/Network Lead)
+
+Aggiornamento stato ogni 30 minuti fino a stabilizzazione.

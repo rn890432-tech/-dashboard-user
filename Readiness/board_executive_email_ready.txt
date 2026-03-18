@@ -1,0 +1,26 @@
+Oggetto: Avvio Phase 2 — Go-Live operativo pilot 802.1X (Branch Office, 100 utenti)
+
+Gentili membri della Direzione/Board,
+
+confermiamo l’avvio operativo della Phase 2 del programma Ghost-Walk, con go-live del pilot 802.1X presso la branch office (100 utenti).
+
+Nel perimetro preparatorio sono stati completati i principali obiettivi previsti:
+- predisposizione checklist day-by-day per coordinamento NOC/SOC/Network;
+- pubblicazione runbook war-room con procedure di triage, escalation e continuità;
+- disponibilità cheat-sheet ASCII one-pager stampabile per uso turno operativo;
+- definizione soglie AMBRA/ROSSO/NERO e processo decisionale per intervento rapido.
+
+A supporto della continuità operativa è stato formalizzato anche il “Panic Button”: procedura controllata di rollback 802.1X attivabile solo in condizioni critiche, con escalation immediata e governance CISO/Network Lead.
+
+Questa impostazione consente di:
+1. ridurre il rischio di disservizio utenti durante il rollout,
+2. mantenere il controllo sui livelli di sicurezza,
+3. accelerare la risposta operativa in caso di degrado.
+
+Nelle prossime 24–72 ore verranno monitorati i KPI di stabilizzazione (success/failure auth, fallback ratio, ticket P1/P2, impatti su servizi critici) e condiviso un aggiornamento sintetico sullo stato del pilot e sulla readiness per estensione progressiva.
+
+Resto a disposizione per eventuali approfondimenti.
+
+Cordiali saluti,
+Network Security Operations
+Project Ghost-Walk — Phase 2

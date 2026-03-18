@@ -1,0 +1,5 @@
+Ghost-Walk Phase 2 è ufficialmente avviata con il pilot 802.1X sulla branch office (100 utenti).
+Checklist operativa, runbook war-room e cheat-sheet stampabile sono stati completati e pubblicati.
+Le soglie di escalation AMBRA/ROSSO/NERO e il Panic Button di rollback sono attivi e governati.
+NOC/SOC/Network operano in war-room con bridge emergenza dedicato e update ogni 30 minuti.
+Le prossime 24–72 ore saranno dedicate a stabilizzazione KPI e readiness per rollout esteso.

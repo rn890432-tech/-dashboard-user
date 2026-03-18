@@ -1,0 +1,37 @@
+INCIDENT MODE — STATO ROSSO / NERO
+
+Versione ROSSO
+
+Team NOC/SOC/Network,
+siamo in stato ROSSO sul pilot 802.1X.
+
+Condizioni:
+- >15% utenti disconnessi, oppure
+- impatto su servizi critici, oppure
+- degradazione prolungata senza recupero immediato.
+
+Azioni immediate:
+1. Attivare bridge emergenza: +39 XXX XXX XXXX
+2. Spostarsi sul canale war-room: #incident-response-live
+3. Applicare fallback MAB sulle porte affette secondo runbook
+4. Aprire/aggiornare ticket P1 con tag 802.1X-FALLBACK
+5. Inviare status update ogni 15 minuti fino a stabilizzazione
+
+Versione NERO
+
+Team NOC/SOC/Network,
+siamo in stato NERO sul pilot 802.1X.
+
+Condizioni:
+- MAB non risolutivo, oppure
+- perdita continuità operativa, oppure
+- impatto critico esteso sulla sede.
+
+Panic Button — Azioni immediate:
+1. Convocare immediatamente bridge emergenza: +39 XXX XXX XXXX
+2. Escalation diretta a CISO + Network Lead + CTO
+3. Attivare rollback 802.1X completo secondo runbook war-room
+4. Aprire/aggiornare ticket P1 con tag 802.1X-FALLBACK e timestamp intervento
+5. Comunicare aggiornamento executive appena completato il rollback
+
+Nota: il Panic Button richiede autorizzazione CISO o Network Lead salvo perdita totale di continuità operativa.
