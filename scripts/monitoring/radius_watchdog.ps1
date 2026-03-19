@@ -4,11 +4,14 @@ param(
     [double]$RedThreshold = 0.15,
     [int]$WindowMinutes = 5,
     [int]$UpdateIntervalMinutes = 30,
+    [int]$UpdateAnchorMinute = 20,
     [int]$PollSeconds = 2,
     [string]$DraftOutputPath = "c:\Users\user\OneDrive\dashboard_user\Readiness\auto_drafts\ambra_draft_latest.txt",
     [string]$UpdateOutputPath = "c:\Users\user\OneDrive\dashboard_user\Readiness\auto_drafts\status_update_latest.txt",
     [string]$UpdateHistoryPath = "c:\Users\user\OneDrive\dashboard_user\Readiness\auto_drafts\status_update_history.log",
     [string]$AlertHtmlPath = "c:\Users\user\OneDrive\dashboard_user\scripts\monitoring\watchdog_alert.html",
+    [string]$PreCheckScriptPath = "c:\Users\user\OneDrive\dashboard_user\scripts\monitoring\precheck_porta.ps1",
+    [string]$ActiveRemediationPath = "c:\Users\user\OneDrive\dashboard_user\Readiness\active_remediation.txt",
     [switch]$StopOnAmber = $true
 )
 
@@ -19,11 +22,9 @@ function Get-RadiusEventType {
     param([string]$Line)
 
     $u = $Line.ToUpperInvariant()
-
     if ($u -match "TIMEOUT|TIMED OUT|RADIUS_TIMEOUT") { return "TIMEOUT" }
     if ($u -match "REJECT|ACCESS-REJECT|AUTH_REJECT") { return "REJECT" }
     if ($u -match "ACCEPT|ACCESS-ACCEPT|AUTH_SUCCESS|AUTHORIZED") { return "ACCEPT" }
-
     return $null
 }
 
@@ -48,19 +49,14 @@ function Get-Metrics {
 
     $total = $EventList.Count
     $errors = @($EventList | Where-Object { $_.Type -in @("TIMEOUT", "REJECT") }).Count
-
     $rate = 0.0
-    if ($total -gt 0) {
-        $rate = $errors / $total
-    }
+    if ($total -gt 0) { $rate = $errors / $total }
 
-    $state = Get-StateFromRate -Rate $rate -Amber $Amber -Red $Red
-
-    return [pscustomobject]@{
+    [pscustomobject]@{
         Total     = $total
         Errors    = $errors
         ErrorRate = $rate
-        State     = $state
+        State     = Get-StateFromRate -Rate $rate -Amber $Amber -Red $Red
     }
 }
 
@@ -156,6 +152,46 @@ function Trigger-Alerts {
     }
 }
 
+function Invoke-PreCheckPorta {
+    param(
+        [string]$ScriptPath,
+        [string]$Log,
+        [int]$Window,
+        [datetime]$Now,
+        [string]$Output
+    )
+
+    if (-not (Test-Path -Path $ScriptPath)) {
+        Write-Warning "[Watchdog] Pre-check script non trovato: $ScriptPath"
+        return
+    }
+
+    try {
+        & $ScriptPath -LogPath $Log -WindowMinutes $Window -ReferenceTime $Now -OutputPath $Output
+        Write-Host "[Watchdog] Pre-check porta completato: $Output" -ForegroundColor Magenta
+    }
+    catch {
+        Write-Warning "[Watchdog] Errore durante Pre-check porta: $($_.Exception.Message)"
+    }
+}
+
+function Get-NextUpdateAt {
+    param(
+        [datetime]$Now,
+        [int]$AnchorMinute,
+        [int]$IntervalMinutes
+    )
+
+    $startOfHour = Get-Date -Year $Now.Year -Month $Now.Month -Day $Now.Day -Hour $Now.Hour -Minute 0 -Second 0
+    $candidate = $startOfHour.AddMinutes($AnchorMinute)
+
+    while ($candidate -le $Now) {
+        $candidate = $candidate.AddMinutes($IntervalMinutes)
+    }
+
+    return $candidate
+}
+
 if (-not (Test-Path -Path $LogPath)) {
     New-Item -ItemType File -Path $LogPath -Force | Out-Null
 }
@@ -168,21 +204,24 @@ if (-not (Test-Path -Path (Split-Path -Path $UpdateOutputPath -Parent))) {
     New-Item -ItemType Directory -Path (Split-Path -Path $UpdateOutputPath -Parent) -Force | Out-Null
 }
 
+if (-not (Test-Path -Path (Split-Path -Path $ActiveRemediationPath -Parent))) {
+    New-Item -ItemType Directory -Path (Split-Path -Path $ActiveRemediationPath -Parent) -Force | Out-Null
+}
+
 if (-not (Test-Path -Path $UpdateHistoryPath)) {
     New-Item -ItemType File -Path $UpdateHistoryPath -Force | Out-Null
 }
 
 $events = New-Object System.Collections.Generic.List[object]
-$nextUpdateAt = (Get-Date).AddMinutes($UpdateIntervalMinutes)
+$nextUpdateAt = Get-NextUpdateAt -Now (Get-Date) -AnchorMinute $UpdateAnchorMinute -IntervalMinutes $UpdateIntervalMinutes
 $lastPosition = (Get-Item -Path $LogPath).Length
 
 Write-Host "[Watchdog] Avvio monitoraggio RADIUS" -ForegroundColor Cyan
-Write-Host "[Watchdog] LogPath=$LogPath | Amber=$($ErrorThreshold * 100)% | Red=$($RedThreshold * 100)% | Window=${WindowMinutes}m | UpdateEvery=${UpdateIntervalMinutes}m" -ForegroundColor Cyan
+Write-Host "[Watchdog] LogPath=$LogPath | Amber=$($ErrorThreshold * 100)% | Red=$($RedThreshold * 100)% | Window=${WindowMinutes}m | UpdateEvery=${UpdateIntervalMinutes}m (anchor :$UpdateAnchorMinute) | NextUpdate=$($nextUpdateAt.ToString('HH:mm:ss'))" -ForegroundColor Cyan
 
 while ($true) {
     $fileInfo = Get-Item -Path $LogPath
     if ($fileInfo.Length -lt $lastPosition) {
-        # Log rotation/truncate
         $lastPosition = 0
         $events.Clear()
         Write-Host "[Watchdog] Rilevato truncate/rotation log, stato finestra azzerato." -ForegroundColor DarkYellow
@@ -228,12 +267,13 @@ while ($true) {
     if ($now -ge $nextUpdateAt) {
         New-PeriodicUpdateDraft -Metrics $metrics -Now $now -OutputPath $UpdateOutputPath -HistoryPath $UpdateHistoryPath -WindowMins $WindowMinutes
         Write-Host "[Watchdog] Update 30-min generato: $UpdateOutputPath" -ForegroundColor Green
-        $nextUpdateAt = $now.AddMinutes($UpdateIntervalMinutes)
+        $nextUpdateAt = Get-NextUpdateAt -Now $now -AnchorMinute $UpdateAnchorMinute -IntervalMinutes $UpdateIntervalMinutes
     }
 
     if ($metrics.ErrorRate -gt $ErrorThreshold) {
         Write-Warning "[Watchdog] SOGLIA AMBRA SUPERATA: $ratePct% (> $($ErrorThreshold * 100)%)"
         New-AmbraDraft -ErrorRate $metrics.ErrorRate -Errors $metrics.Errors -Total $metrics.Total -Path $DraftOutputPath -Now $now
+        Invoke-PreCheckPorta -ScriptPath $PreCheckScriptPath -Log $LogPath -Window $WindowMinutes -Now $now -Output $ActiveRemediationPath
         Trigger-Alerts -AlertPage $AlertHtmlPath
         Write-Host "[Watchdog] Draft AMBRA aggiornato: $DraftOutputPath" -ForegroundColor Yellow
 
