@@ -1,0 +1,15 @@
+[DELTA REPORT] — Overnight Audit RADIUS
+Generated: 2026-03-19 04:56:08
+Analisi finestra: 2026-03-19 05:00:00 -> 2026-03-19 09:00:00
+
+1. Eventuali picchi di errore
+- Nessun evento telemetria rilevato nella finestra analizzata.
+
+2. Orario del picco massimo
+- N/D (nessun evento nel periodo)
+
+3. Stato finale del sistema
+- Stato finale: VERDE
+- Eventi totali nella finestra: 0
+- Errori totali nella finestra: 0
+- Ultimo evento osservato: N/D
