@@ -1,15 +1,33 @@
 [DELTA REPORT] — Overnight Audit RADIUS
-Generated: 2026-03-19 04:56:08
-Analisi finestra: 2026-03-19 05:00:00 -> 2026-03-19 09:00:00
+Generated: 2026-03-19 13:11:22
+Confronto: overnight 2026-03-19 05:00:00 -> 2026-03-19 09:00:00 VS current snapshot full-log-fallback
 
-1. Eventuali picchi di errore
-- Nessun evento telemetria rilevato nella finestra analizzata.
+1. Overnight window (05:00–09:00)
+- Stato: ROSSO
+- Eventi totali: 8
+- Errori totali: 5
+- Error rate: 62.5%
+- Ultimo evento osservato: 2026-03-19 05:23:48
+- Picco massimo: 62.5% (5/8) alle 05:20
 
-2. Orario del picco massimo
-- N/D (nessun evento nel periodo)
+2. Current snapshot (full-log-fallback)
+- Finestra attuale: 2026-03-19 05:23:41 -> 2026-03-19 05:23:48
+- Stato: ROSSO
+- Eventi totali: 8
+- Errori totali: 5
+- Error rate: 62.5%
+- Ultimo evento osservato: 2026-03-19 05:23:48
+- Picco massimo: 62.5% (5/8) alle 05:20
 
-3. Stato finale del sistema
-- Stato finale: VERDE
-- Eventi totali nella finestra: 0
-- Errori totali nella finestra: 0
-- Ultimo evento osservato: N/D
+3. Delta comparativo
+- Trend complessivo: Stabile
+- Delta error rate: 0%
+- Delta errori: 0
+- Delta eventi totali: 0
+- Interpretazione: overnight=ROSSO, current=ROSSO
+
+4. Executive takeaway
+- Stato di rischio corrente: ROSSO
+- Overnight state: ROSSO
+- Se current >= AMBRA, mantenere triage e pre-check MAB attivi.
+- Se current = VERDE, mantenere Continuous Ops con heartbeat Slack ogni 4 ore.

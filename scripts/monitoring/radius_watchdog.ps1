@@ -20,6 +20,7 @@ param(
 
     # ── Level 4 Incident Mode ──────────────────────────────────────────────────
     [switch]$IncidentLevel4,
+    [switch]$ContinuousOps,
     [string]$RichardDraftPath = "c:\Users\user\OneDrive\dashboard_user\Readiness\auto_drafts\richard_escalation_latest.txt",
     [string]$AuditLogPath = "c:\Users\user\OneDrive\dashboard_user\Readiness\morning_audit.txt",
     [int]$TrendWindowSamples = 5,
@@ -292,7 +293,7 @@ function Send-WebhookAlert {
         [int]$Total,
         [string]$DraftPath,
         [string]$RemediationPath,
-        [string]$AlertKind = "AMBRA"   # "AMBRA" | "CRITICAL_TREND"
+        [string]$AlertKind = "AMBRA"   # "AMBRA" | "CRITICAL_TREND" | "HEARTBEAT"
     )
 
     if ([string]::IsNullOrWhiteSpace($Url)) {
@@ -305,6 +306,9 @@ function Send-WebhookAlert {
 
     if ($AlertKind -eq "CRITICAL_TREND") {
         $text = "[CRITICAL TREND] Trend ROSSO rilevato alle $ts | error-rate=${ratePct}% (${Errors}/${Total}) | SOGLIA ROSSO=15% | bridge=+1 786-781-2573 | draft-richard=$DraftPath | remediation=$RemediationPath | AZIONE IMMEDIATA RICHIESTA"
+    }
+    elseif ($AlertKind -eq "HEARTBEAT") {
+        $text = "[CONTINUOUS OPS] heartbeat alle $ts | state=$((Get-StateFromRate -Rate $ErrorRate -Amber $ErrorThreshold -Red $RedThreshold)) | error-rate=${ratePct}% (${Errors}/${Total}) | status=$DraftPath"
     }
     else {
         $text = "[AMBRA] Trigger rilevato alle $ts | error-rate=${ratePct}% (${Errors}/${Total}) | bridge=+1 786-781-2573 | draft=$DraftPath | remediation=$RemediationPath"
@@ -377,6 +381,10 @@ if ($IncidentLevel4) {
     Write-Host "[Watchdog] === MODALITÀ INCIDENT LEVEL 4 ATTIVA ===" -ForegroundColor Red
     Add-AuditLogEntry -LogPath $AuditLogPath -Level "INFO" -Message "WATCHDOG Level 4 avviato — AMBRA=$($ErrorThreshold*100)% ROSSO=$($RedThreshold*100)% finestra=${WindowMinutes}m" -Now (Get-Date)
 }
+if ($ContinuousOps) {
+    Write-Host "[Watchdog] === CONTINUOUS OPS ATTIVO ===" -ForegroundColor Green
+    Add-AuditLogEntry -LogPath $AuditLogPath -Level "INFO" -Message "WATCHDOG Continuous Ops avviato — heartbeat ogni ${UpdateIntervalMinutes} minuti" -Now (Get-Date)
+}
 Write-Host "[Watchdog] LogPath=$LogPath | Amber=$($ErrorThreshold * 100)% | Red=$($RedThreshold * 100)% | Window=${WindowMinutes}m | UpdateEvery=${UpdateIntervalMinutes}m (anchor :$UpdateAnchorMinute) | NextUpdate=$($nextUpdateAt.ToString('HH:mm:ss'))" -ForegroundColor Cyan
 if (-not [string]::IsNullOrWhiteSpace($resolvedWebhookUrl)) {
     Write-Host "[Watchdog] Webhook attivo: type=$resolvedWebhookType" -ForegroundColor Cyan
@@ -441,6 +449,12 @@ while ($true) {
     if ($now -ge $nextUpdateAt) {
         New-PeriodicUpdateDraft -Metrics $metrics -Now $now -OutputPath $UpdateOutputPath -HistoryPath $UpdateHistoryPath -WindowMins $WindowMinutes
         Write-Host "[Watchdog] Update 30-min generato: $UpdateOutputPath" -ForegroundColor Green
+        if ($ContinuousOps) {
+            Send-WebhookAlert -Url $resolvedWebhookUrl -Type $resolvedWebhookType -Channel $WebhookChannel -Now $now `
+                -ErrorRate $metrics.ErrorRate -Errors $metrics.Errors -Total $metrics.Total `
+                -DraftPath $UpdateOutputPath -RemediationPath $ActiveRemediationPath -AlertKind "HEARTBEAT"
+            Add-AuditLogEntry -LogPath $AuditLogPath -Level "HEARTBEAT" -Message "Continuous Ops heartbeat: state=$($metrics.State) rate=$ratePct% errors=$($metrics.Errors)/$($metrics.Total)" -Now $now
+        }
         if ($IncidentLevel4) {
             Add-AuditLogEntry -LogPath $AuditLogPath -Level "STATUS" -Message "30-min update: state=$($metrics.State) rate=$ratePct% errors=$($metrics.Errors)/$($metrics.Total)" -Now $now
         }

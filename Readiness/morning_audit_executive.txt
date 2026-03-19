@@ -1,0 +1,15 @@
+Oggetto: Morning Audit comparativo — Branch Pilot 802.1X
+
+Richard/Board,
+
+l'audit comparativo completato il 2026-03-19 13:11:22 evidenzia un confronto tra la finestra overnight (05:00–09:00) e lo snapshot attuale dei log RADIUS.
+
+Sintesi overnight: stato ROSSO, error rate 62.5%, errori 5/8.
+Sintesi attuale: stato ROSSO, error rate 62.5%, errori 5/8.
+Delta complessivo: Stabile (0% di variazione error rate).
+
+Valutazione esecutiva: rischio corrente ROSSO.
+Raccomandazione: mantenere Continuous Ops attivo; se il rate torna sopra AMBRA, applicare immediatamente pre-check porta, MAB selettivo e bridge operativo.
+
+Cordiali saluti,
+Network Security Operations
