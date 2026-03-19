@@ -1,0 +1,114 @@
+WAR-ROOM STATUS TEMPLATES — 30 MIN LOOP
+Data: 18 marzo 2026
+Bridge emergenza: +1 786-781-2573
+Canale war-room: #incident-response-live
+
+======================================================================
+TEMPLATE VERDE
+======================================================================
+[30-MIN STATUS UPDATE] — Branch Pilot 802.1X
+Timestamp: <HH:MM local time>
+Stato corrente: VERDE
+
+Sintesi operativa:
+- Nessuna anomalia rilevata nei log 802.1X
+- Tasso di successo autenticazione nominale
+- Nessun incremento anomalo di fallback MAB
+- Nessun ticket P1/P2 correlato autenticazione in questo intervallo
+- Nessuna condizione AMBRA/ROSSO/NERO attiva
+
+Indicatori chiave:
+- Auth success rate: nominale / entro soglia
+- Auth failure rate: stabile / non significativo
+- MAB fallback ratio: nullo o entro baseline
+- Servizi critici: regolari
+- Bridge emergenza: standby (+1 786-781-2573)
+
+Azioni eseguite:
+- Monitoraggio continuo log NAC / switch / RADIUS
+- Verifica trend autenticazioni per wave attiva
+- Nessuna remediation richiesta
+
+Prossimo checkpoint:
+- Nuovo aggiornamento tra 30 minuti salvo eccezioni
+- Escalation immediata se si entra in AMBRA/ROSSO/NERO
+
+Versione breve:
+[30-MIN UPDATE] Stato VERDE — nessuna anomalia nei log 802.1X, auth success nominale, nessun MAB anomalo, nessun P1/P2 correlato. Prossimo update tra 30 minuti salvo eccezioni.
+
+======================================================================
+TEMPLATE AMBRA
+======================================================================
+[30-MIN STATUS UPDATE] — Branch Pilot 802.1X
+Timestamp: <HH:MM local time>
+Stato corrente: AMBRA
+
+Sintesi operativa:
+- Rilevato degrado limitato o trend anomalo sotto soglia critica
+- Impatto contenuto: 5–15% utenti/porte affette oppure lieve incremento auth failure
+- Servizi critici attualmente disponibili
+- Fallback MAB selettivo abilitato solo dove necessario
+- Nessuna condizione ROSSO/NERO attiva al momento
+
+Indicatori chiave:
+- Auth success rate: in lieve calo ma operativo
+- Auth failure rate: sopra baseline, sotto soglia critica
+- MAB fallback ratio: in aumento controllato
+- Servizi critici: disponibili
+- Bridge emergenza: in pre-allerta (+1 786-781-2573)
+
+Azioni eseguite:
+- Triage su switch/porte interessate
+- Verifica RADIUS / NAC / policy order
+- MAB selettivo applicato agli endpoint/porte coinvolte
+- Monitoraggio intensificato e tracking ticket correlati
+
+Rischio e decisione:
+- Rischio operativo sotto controllo ma in osservazione ravvicinata
+- Se l’impatto cresce oltre soglia o tocca servizi critici, passaggio immediato a ROSSO
+
+Prossimo checkpoint:
+- Nuovo aggiornamento tra 15–30 minuti
+- Escalation immediata se: >15% disconnessi, RADIUS instabile, o impatto servizi critici
+
+Versione breve:
+[30-MIN UPDATE] Stato AMBRA — rilevato degrado limitato su autenticazioni 802.1X, impatto contenuto e sotto controllo. MAB selettivo attivo dove necessario, servizi critici disponibili, monitoraggio intensificato. Prossimo update entro 15–30 minuti.
+
+======================================================================
+TEMPLATE ROSSO
+======================================================================
+[30-MIN STATUS UPDATE] — Branch Pilot 802.1X
+Timestamp: <HH:MM local time>
+Stato corrente: ROSSO
+
+Sintesi operativa:
+- Rilevato degrado significativo del pilot 802.1X
+- Impatto: >15% utenti/porte affette oppure coinvolgimento di servizi critici
+- War-room attiva in modalità incident
+- Fallback MAB in corso sulle porte/segmenti interessati
+- Escalation L2/L3 attiva
+
+Indicatori chiave:
+- Auth success rate: degradato
+- Auth failure rate: sopra soglia critica
+- MAB fallback ratio: elevato e in crescita
+- Servizi critici: parzialmente impattati o a rischio
+- Bridge emergenza: attivo (+1 786-781-2573)
+
+Azioni eseguite:
+- Bridge emergenza convocato
+- Triage congiunto NOC / SOC / Network attivo
+- Fallback MAB applicato alle porte affette secondo runbook
+- Ticket P1 aperto/aggiornato con tag 802.1X-FALLBACK
+- Verifica in corso su RADIUS, ISE/NAC, switch edge e policy order
+
+Rischio e decisione:
+- Rischio operativo elevato
+- Se MAB non stabilizza o aumenta l’impatto, valutazione immediata stato NERO / Panic Button
+
+Prossimo checkpoint:
+- Nuovo aggiornamento entro 15 minuti
+- Escalation executive se persiste impatto o si entra in NERO
+
+Versione breve:
+[INCIDENT UPDATE] Stato ROSSO — degrado significativo su autenticazioni 802.1X con impatto operativo in corso. War-room e bridge emergenza attivi, fallback MAB in esecuzione, ticket P1 aperto. Nuovo aggiornamento entro 15 minuti.
