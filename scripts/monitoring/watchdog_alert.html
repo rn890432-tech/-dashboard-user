@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="it">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WATCHDOG ALERT — AMBRA</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Segoe UI, Arial, sans-serif;
+            background: #2a0000;
+            color: #fff;
+            display: flex;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .panel {
+            max-width: 760px;
+            padding: 2rem;
+            border: 2px solid #ff4d4d;
+            border-radius: 16px;
+            background: rgba(255, 77, 77, 0.12);
+            box-shadow: 0 0 32px rgba(255, 77, 77, 0.6);
+            animation: pulse 1s infinite;
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #ffb3b3;
+        }
+
+        .code {
+            font-family: Consolas, monospace;
+            color: #ffd9d9;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="panel">
+        <h1>⚠️ SOGLIA AMBRA SUPERATA</h1>
+        <p>Il Watchdog ha rilevato errori <span class="code">TIMEOUT/REJECT</span> oltre il 5% negli ultimi 5 minuti.
+        </p>
+        <p>Apri il draft in: <span class="code">Readiness/auto_drafts/ambra_draft_latest.txt</span></p>
+        <p>Bridge emergenza: <span class="code">+1 786-781-2573</span></p>
+    </div>
+
+    <script>
+        // Best-effort browser audio alert (autoplay dipende dalla policy browser).
+        (function () {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const playTone = (freq, ms) => {
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.frequency.value = freq;
+                o.type = 'square';
+                o.connect(g);
+                g.connect(audioCtx.destination);
+                g.gain.value = 0.07;
+                o.start();
+                setTimeout(() => o.stop(), ms);
+            };
+
+            const pattern = () => {
+                playTone(880, 180);
+                setTimeout(() => playTone(1200, 180), 240);
+                setTimeout(() => playTone(1500, 250), 480);
+            };
+
+            try {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume().then(pattern).catch(() => { });
+                } else {
+                    pattern();
+                }
+                setInterval(pattern, 3000);
+            } catch (_) { }
+        })();
+    </script>
+</body>
+
+</html>
